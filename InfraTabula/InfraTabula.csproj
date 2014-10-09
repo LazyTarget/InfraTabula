@@ -35,9 +35,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PocketAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\PocketAPI\PocketAPI\bin\Debug\PocketAPI.dll</HintPath>
+    <Reference Include="PocketAPI">
+      <HintPath>..\packages\PocketAPI\PocketAPI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,7 +49,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TestConsole">
-      <HintPath>..\..\PocketAPI\TestConsole\bin\Debug\TestConsole.exe</HintPath>
+      <HintPath>..\packages\PocketAPI\TestConsole.exe</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
