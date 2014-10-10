@@ -28,14 +28,18 @@ namespace InfraTabula.Xna.Win
             ////base.OnButtonUp += _OnButtonUp;
 
             Window.AllowUserResizing = true;
+
+            _screenManager = new ScreenManager(this);
         }
 
 
-        private readonly Color _backColor = XnaLibrary.Extensions.FromColor(System.Drawing.SystemColors.Control);
+        //private readonly Color _backColor = XnaLibrary.Extensions.FromColor(System.Drawing.SystemColors.Control);
+        private readonly Color _backColor = Color.CornflowerBlue;
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private readonly List<ISprite> _sprites = new List<ISprite>();
         private int _velocity = 5;
+        private readonly ScreenManager _screenManager;
 
 
 
@@ -55,8 +59,15 @@ namespace InfraTabula.Xna.Win
 
         protected override void Initialize()
         {
+            var screen = new ListScreen();
+            _screenManager.AddScreen(screen);
+
+            Components.Add(_screenManager);
+
             base.Initialize();
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+
 
 
             //API.Authenticate();

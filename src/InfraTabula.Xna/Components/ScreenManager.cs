@@ -103,7 +103,7 @@ namespace InfraTabula.Xna
             // Load content belonging to the screen manager.
             //ContentManager content = Game.Content;
 
-            //spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
             //font = content.Load<SpriteFont>("menufont");
             //blankTexture = content.Load<Texture2D>("blank");
 
@@ -206,6 +206,8 @@ namespace InfraTabula.Xna
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
+            SpriteBatch.Begin();
+
             foreach (GameScreen screen in screens)
             {
                 if (screen.ScreenState == ScreenState.Hidden)
@@ -213,6 +215,8 @@ namespace InfraTabula.Xna
 
                 screen.Draw(gameTime);
             }
+
+            SpriteBatch.End();
         }
 
 
@@ -224,9 +228,8 @@ namespace InfraTabula.Xna
         /// <summary>
         /// Adds a new screen to the screen manager.
         /// </summary>
-        public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer)
+        public void AddScreen(GameScreen screen)
         {
-            //screen.ControllingPlayer = controllingPlayer;
             screen.ScreenManager = this;
             screen.IsExiting = false;
 

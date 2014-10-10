@@ -1,7 +1,18 @@
-﻿namespace InfraTabula.Xna
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace InfraTabula.Xna
 {
     public class SpriteFactory
     {
+        private readonly GraphicsDevice _graphicsDevice;
+
+        public SpriteFactory(Game game)
+        {
+            _graphicsDevice = game.GraphicsDevice;
+        }
+
+
         //public static Sprite GetRandom(GraphicsDevice graphicsDevice)
         //{
         //    var width = _random.Next(50, 250);
@@ -34,22 +45,33 @@
         //}
 
 
-        //private Texture2D CreateRectangle(int width, int height, Color colori)
-        //{
-        //    return CreateRectangle(GraphicsDevice, width, height, colori);
-        //}
 
-        //internal static Texture2D CreateRectangle(GraphicsDevice graphicsDevice, int width, int height, Color colori)
-        //{
-        //    Texture2D rectangleTexture = new Texture2D(graphicsDevice, width, height);  // create the rectangle texture, ,but it will have no color! lets fix that
-        //    Color[] color = new Color[width * height];              //set the color to the amount of pixels in the textures
-        //    for (int i = 0; i < color.Length; i++)                  //loop through all the colors setting them to whatever values we want
-        //    {
-        //        color[i] = colori;
-        //    }
-        //    rectangleTexture.SetData(color);//set the color data on the texture
-        //    return rectangleTexture;//return the texture
-        //}
+        public T Create<T>()
+            where T : ISprite, new ()
+        {
+            var r = new T();
+            return r;
+        }
+
+        public T Create<T>(params object[] args)
+            where T : ISprite
+        {
+            var r = (T) System.Activator.CreateInstance(typeof (T), args);
+            return r;
+        }
+
+
+
+        public SpriteTexture2D CreateFilledRectangle(int width, int height, Color colori)
+        {
+            Texture2D rectangleTexture = new Texture2D(_graphicsDevice, width, height);     // create the rectangle texture, ,but it will have no color! lets fix that
+            Color[] color = new Color[width * height];                                      //set the color to the amount of pixels in the textures
+            for (int i = 0; i < color.Length; i++)                                          //loop through all the colors setting them to whatever values we want
+                color[i] = colori;
+            rectangleTexture.SetData(color);                                                //set the color data on the texture
+            var spriteTexture = new SpriteTexture2D(rectangleTexture);
+            return spriteTexture;
+        }
 
     }
 }

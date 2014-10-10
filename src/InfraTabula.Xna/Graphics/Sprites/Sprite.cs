@@ -6,7 +6,13 @@ namespace InfraTabula.Xna
 {
     public class Sprite : ISprite
     {
+        public Sprite()
+        {
+
+        }
+
         public Sprite(ISpriteTexture spriteTexture)
+            : this()
         {
             if (spriteTexture == null)
                 throw new ArgumentNullException("spriteTexture");
@@ -14,7 +20,7 @@ namespace InfraTabula.Xna
         }
         
 
-        private ISpriteTexture SpriteTexture { get; set; }
+        public ISpriteTexture SpriteTexture { get; internal set; }
 
         public Vector2 Position { get; set; }
 
@@ -33,5 +39,6 @@ namespace InfraTabula.Xna
         {
             SpriteTexture.Draw(spriteBatch, Position);
         }
+
     }
 }
