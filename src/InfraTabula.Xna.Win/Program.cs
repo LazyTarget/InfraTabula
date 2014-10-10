@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace InfraTabula.Win
+namespace InfraTabula.Xna.Win
 {
     static class Program
     {
-        public static App App;
+        public static Game1 GameInstance;
 
 
         /// <summary>
@@ -13,9 +13,10 @@ namespace InfraTabula.Win
         [STAThread]
         static void Main()
         {
-            App = new App();
-            App.Run();
+            GameInstance = new Game1();
+            GameInstance.Run();
         }
+
 
 
         public static void Debug(string message, params object[] args)

@@ -7,8 +7,8 @@
     <ProjectGuid>{B34D99C8-5B97-467F-B1CB-CF973FE5BF7F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InfraTabula.Win</RootNamespace>
-    <AssemblyName>InfraTabula.Win</AssemblyName>
+    <RootNamespace>InfraTabula.Xna.Win</RootNamespace>
+    <AssemblyName>InfraTabula.Xna.Win</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -63,10 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
+    <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sprite.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -75,6 +74,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -91,10 +91,17 @@
       <Project>{1eaa831f-7859-429a-8632-669450e840d6}</Project>
       <Name>InfraTabula.Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InfraTabula.Xna\InfraTabula.Xna.csproj">
+      <Project>{3d6f4df8-1f5e-4d8b-8692-8df00b96d2ca}</Project>
+      <Name>InfraTabula.Xna</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InfraTabula\InfraTabula.csproj">
       <Project>{fecfc97b-4c30-4120-834b-155c78c8cf7e}</Project>
       <Name>InfraTabula</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Events\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

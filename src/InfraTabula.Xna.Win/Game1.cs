@@ -7,11 +7,11 @@ using XnaLibrary;
 using KeyEventArgs = XnaLibrary.KeyEventArgs;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
-namespace InfraTabula.Win
+namespace InfraTabula.Xna.Win
 {
-    public class App : XnaAppBase
+    public class Game1 : GameBase
     {
-        public App()
+        public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
 
@@ -34,7 +34,7 @@ namespace InfraTabula.Win
         private readonly Color _backColor = XnaLibrary.Extensions.FromColor(System.Drawing.SystemColors.Control);
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private readonly List<Sprite> _sprites = new List<Sprite>();
+        private readonly List<ISprite> _sprites = new List<ISprite>();
         private int _velocity = 5;
 
 
@@ -45,7 +45,7 @@ namespace InfraTabula.Win
 
         private void Debug(string message)
         {
-            message = string.Format("App.{0}", message);
+            message = string.Format("GameInstance.{0}", message);
             Program.Debug(message);
         }
 
@@ -63,12 +63,12 @@ namespace InfraTabula.Win
             //var items = API.GetItems().ToList();
 
 
-            _sprites.Add(new Sprite(CreateRectangle(GraphicsDevice.Viewport.Width - 10, 10, Color.Lime), Color.Lime, new Vector2(5, 5)));
-            _sprites.Add(Sprite.GetRandom(GraphicsDevice));
-            _sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Blue), Color.Blue, new Vector2(10, 20)));
-            _sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Red), Color.Red, new Vector2(90, 70)));
-            for (var i = 0; i < 5; i++)
-                _sprites.Add(Sprite.GetRandom(GraphicsDevice));
+            //_sprites.Add(new Sprite(CreateRectangle(GraphicsDevice.Viewport.Width - 10, 10, Color.Lime), Color.Lime, new Vector2(5, 5)));
+            //_sprites.Add(Sprite.GetRandom(GraphicsDevice));
+            //_sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Blue), Color.Blue, new Vector2(10, 20)));
+            //_sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Red), Color.Red, new Vector2(90, 70)));
+            //for (var i = 0; i < 5; i++)
+            //    _sprites.Add(Sprite.GetRandom(GraphicsDevice));
         }
 
 
@@ -108,32 +108,13 @@ namespace InfraTabula.Win
             _spriteBatch.Begin();
 
             foreach (var s in _sprites)
-                _spriteBatch.Draw(s.Texture, s.Position, s.Color);
+                s.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
 
             base.Draw(gameTime);
         }
-
-
-        private Texture2D CreateRectangle(int width, int height, Color colori)
-        {
-            return CreateRectangle(GraphicsDevice, width, height, colori);
-        }
-
-        internal static Texture2D CreateRectangle(GraphicsDevice graphicsDevice, int width, int height, Color colori)
-        {
-            Texture2D rectangleTexture = new Texture2D(graphicsDevice, width, height);  // create the rectangle texture, ,but it will have no color! lets fix that
-            Color[] color = new Color[width * height];              //set the color to the amount of pixels in the textures
-            for (int i = 0; i < color.Length; i++)                  //loop through all the colors setting them to whatever values we want
-            {
-                color[i] = colori;
-            }
-            rectangleTexture.SetData(color);//set the color data on the texture
-            return rectangleTexture;//return the texture
-        }
-
 
         #endregion
 
@@ -215,7 +196,7 @@ namespace InfraTabula.Win
             Debug("GoRight()");
             foreach (var s in _sprites)
             {
-                s.Position = new Vector2(Math.Min(GraphicsDevice.Viewport.Width - s.Texture.Width, s.Position.X + _velocity),
+                s.Position = new Vector2(Math.Min(GraphicsDevice.Viewport.Width - s.Bounds.Width, s.Position.X + _velocity),
                     s.Position.Y);
             }
         }
@@ -226,7 +207,7 @@ namespace InfraTabula.Win
             foreach (var s in _sprites)
             {
                 s.Position = new Vector2(s.Position.X,
-                    Math.Min(GraphicsDevice.Viewport.Height - s.Texture.Height, s.Position.Y + _velocity));
+                    Math.Min(GraphicsDevice.Viewport.Height - s.Bounds.Height, s.Position.Y + _velocity));
             }
         }
 
