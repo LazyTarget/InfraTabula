@@ -4,4 +4,7 @@ InfraTabula
 ===========
 
 An client application for read it later services. Currently only support with Pocket.
+
+Infra means "Later" in Latin and Tabula can mean "List" => "Later list"
+
 Built with the XNA framework for Xbox controller support
