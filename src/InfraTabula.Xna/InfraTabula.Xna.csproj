@@ -72,6 +72,8 @@
     <Compile Include="Components\GameScreen.cs" />
     <Compile Include="Components\ScreenManager.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Events\EventBase.cs" />
+    <Compile Include="Events\MouseLeftDownEvent.cs" />
     <Compile Include="GameBase.cs" />
     <Compile Include="Graphics\ISprite.cs" />
     <Compile Include="Graphics\SpriteFactory.cs" />
@@ -115,7 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Diagnostics\" />
-    <Folder Include="Events\" />
     <Folder Include="Helpers\" />
     <Folder Include="Input\" />
   </ItemGroup>

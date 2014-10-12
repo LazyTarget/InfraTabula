@@ -59,6 +59,13 @@ namespace InfraTabula.Xna.Win
 
         protected override void Initialize()
         {
+            var mouseDownEvent = new MouseLeftDownEvent((inputState) =>
+            {
+                
+
+            }, InputState);
+            
+            
             var screen = new ListScreen();
             _screenManager.AddScreen(screen);
 
