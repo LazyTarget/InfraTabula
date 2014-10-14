@@ -4,18 +4,18 @@ using XnaLibrary;
 
 namespace InfraTabula.Xna
 {
-    public class MouseLeftDownEvent : EventBase
+    public class MouseRightUpEvent : EventBase
     {
-        public MouseLeftDownEvent(Action callback) : base(callback) { }
-
+        public MouseRightUpEvent(Action callback) : base(callback) { }
+        
 
         protected override bool Check()
         {
             var inputStateManager = Game.InputState;
             var mouseComparison = inputStateManager.CompareMouse();
-            var c = mouseComparison.ButtonComparisions[MouseButtons.Left];
-            if (c.OldState == ButtonState.Released &&
-                c.CurrentState == ButtonState.Pressed)
+            var c = mouseComparison.ButtonComparisions[MouseButtons.Right];
+            if (c.OldState == ButtonState.Pressed &&
+                c.CurrentState == ButtonState.Released)
                 return true;
             return false;
         }

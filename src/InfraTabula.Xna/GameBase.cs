@@ -2,24 +2,38 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using XnaLibrary;
+using XnaLibrary.Input;
 
 namespace InfraTabula.Xna
 {
-    public class GameBase : XnaAppBase //Microsoft.Xna.Framework.Game
+    public class GameBase : XnaAppBase, IEventBoundable     //Microsoft.Xna.Framework.Game
     {
-        private readonly List<EventBase> _events = new List<EventBase>();
+        private readonly List<IEvent> _events = new List<IEvent>();
+
+
+        public new InputStateManager InputState
+        {
+            get { return base.InputState; }
+        }
 
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
+        }
+
+
+        protected override void HandleInput(GameTime gameTime, InputStateManager input)
+        {
+            base.HandleInput(gameTime, input);
+
             foreach (var evt in _events)
                 evt.Update();
         }
 
 
-        protected void BindEvent(EventBase evt)
+        public void BindEvent(IEvent evt)
         {
             if (_events.Contains(evt))
                 throw new InvalidOperationException("Event already bound");
@@ -27,7 +41,7 @@ namespace InfraTabula.Xna
         }
 
 
-        protected void UnbindEvent(EventBase evt)
+        public void UnbindEvent(IEvent evt)
         {
             var removed = _events.Remove(evt);
             //if (!removed)

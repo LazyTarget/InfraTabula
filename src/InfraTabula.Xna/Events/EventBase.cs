@@ -2,64 +2,110 @@
 
 namespace InfraTabula.Xna
 {
-    public abstract class EventBase
+    public interface IEvent
     {
-        public Action Event { get; private set; }
+        void Update();
+        //bool Check();
+    }
 
-        protected EventBase(Action @event)
+
+    public abstract class EventBase : IEvent
+    {
+        public Action<EventBase> UpdateHandling { get; set; }
+        public Action Callback { get; private set; }
+        protected GameBase Game { get; private set; }
+
+        protected EventBase(Action callback)
         {
-            if (@event == null)
-                throw new ArgumentNullException("event");
-            Event = @event;
+            if (callback == null)
+                throw new ArgumentNullException("callback");
+            Callback = callback;
         }
+
+
+        public void Bind(GameBase game)
+        {
+            Game = game;
+
+            var eventBoundbleGame = Game as IEventBoundable;
+            if (eventBoundbleGame != null)
+                eventBoundbleGame.BindEvent(this);
+        }
+
+        public void Unbind()
+        {
+            var eventBoundbleGame = Game as IEventBoundable;
+            if (eventBoundbleGame != null)
+                eventBoundbleGame.UnbindEvent(this);
+
+            Game = null;
+        }
+
 
 
         private void Trigger()
         {
-            Event();
+            Callback();
         }
 
 
         public void Update()
         {
+            if (UpdateHandling != null)
+                UpdateHandling(this);
+
+            if (Game == null)
+                throw new InvalidOperationException("Event has not been bound to a Game");
+
             var res = Check();
             if (res)
                 Trigger();
         }
 
-        public abstract bool Check();
+        protected abstract bool Check();
 
     }
 
 
-
-
-    public abstract class EventBase<T>
+    public static class EventExtensions
     {
-        public Action<T> Event { get; private set; }
-
-        protected EventBase(Action<T> action)
+        public static void SetUpdateHandling<T>(this T evt, Action<T> updateHandling)
+            where T : EventBase
         {
-            if (action == null)
-                throw new ArgumentNullException("action");
-            Event = action;
+            evt.UpdateHandling = (Action<EventBase>) updateHandling;
         }
-
-
-        private void Trigger(T arg)
-        {
-            Event(arg);
-        }
-
-
-        public void Update(T arg)
-        {
-            var res = Check();
-            if (res)
-                Trigger(arg);
-        }
-
-        public abstract bool Check();
-
     }
+
+
+
+
+    //public abstract class EventBase<T> : IEvent
+    //{
+    //    public Action<T> Event { get; private set; }
+
+    //    protected EventBase(Action<T> action)
+    //    {
+    //        if (action == null)
+    //            throw new ArgumentNullException("action");
+    //        Event = action;
+    //    }
+
+
+    //    private void Trigger()
+    //    {
+    //        Event(arg);
+    //    }
+
+
+    //    public void Update()
+    //    {
+    //        var res = Check();
+    //        if (res)
+    //            Trigger(arg);
+    //    }
+
+    //    public abstract bool Check();
+
+    //}
+
 }

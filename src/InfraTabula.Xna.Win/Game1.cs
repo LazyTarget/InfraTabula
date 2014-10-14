@@ -59,12 +59,9 @@ namespace InfraTabula.Xna.Win
 
         protected override void Initialize()
         {
-            var mouseDownEvent = new MouseLeftDownEvent((inputState) =>
-            {
-                
+            var mouseDownEvent = new MouseLeftDownEvent(MouseLeftDown_Callback);
+            mouseDownEvent.Bind(this);
 
-            }, InputState);
-            
             
             var screen = new ListScreen();
             _screenManager.AddScreen(screen);
@@ -87,6 +84,11 @@ namespace InfraTabula.Xna.Win
             //_sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Red), Color.Red, new Vector2(90, 70)));
             //for (var i = 0; i < 5; i++)
             //    _sprites.Add(Sprite.GetRandom(GraphicsDevice));
+        }
+
+        private void MouseLeftDown_Callback()
+        {
+            Debug("MouseLeftDown_Callback()");
         }
 
 
