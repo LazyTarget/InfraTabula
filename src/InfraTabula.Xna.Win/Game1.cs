@@ -59,11 +59,11 @@ namespace InfraTabula.Xna.Win
 
         protected override void Initialize()
         {
-            var mouseDownEvent = new MouseLeftDownEvent((inputState) =>
+            var mouseDownEvent = new MouseLeftDownEvent(() =>
             {
-                
-
-            }, InputState);
+                Program.Debug("MouseLeftDown");
+            }, () => InputState);
+            BindEvent(mouseDownEvent);
             
             
             var screen = new ListScreen();
@@ -73,20 +73,6 @@ namespace InfraTabula.Xna.Win
 
             base.Initialize();
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-
-
-
-            //API.Authenticate();
-            //var items = API.GetItems().ToList();
-
-
-            //_sprites.Add(new Sprite(CreateRectangle(GraphicsDevice.Viewport.Width - 10, 10, Color.Lime), Color.Lime, new Vector2(5, 5)));
-            //_sprites.Add(Sprite.GetRandom(GraphicsDevice));
-            //_sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Blue), Color.Blue, new Vector2(10, 20)));
-            //_sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Red), Color.Red, new Vector2(90, 70)));
-            //for (var i = 0; i < 5; i++)
-            //    _sprites.Add(Sprite.GetRandom(GraphicsDevice));
         }
 
 

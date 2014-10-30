@@ -2,7 +2,13 @@
 
 namespace InfraTabula.Xna
 {
-    public abstract class EventBase
+    public interface IEvent
+    {
+        void Update();
+    }
+    
+
+    public abstract class EventBase : IEvent
     {
         public Action Event { get; private set; }
 
@@ -20,7 +26,7 @@ namespace InfraTabula.Xna
         }
 
 
-        public void Update()
+        public virtual void Update()
         {
             var res = Check();
             if (res)
@@ -34,7 +40,7 @@ namespace InfraTabula.Xna
 
 
 
-    public abstract class EventBase<T>
+    public abstract class EventBase<T> : IEvent
     {
         public Action<T> Event { get; private set; }
 
@@ -51,6 +57,12 @@ namespace InfraTabula.Xna
             Event(arg);
         }
 
+
+        public void Update()
+        {
+            var arg = default(T);
+            Update(arg);
+        }
 
         public void Update(T arg)
         {

@@ -5,18 +5,19 @@ using XnaLibrary.Input;
 
 namespace InfraTabula.Xna
 {
-    public class MouseLeftDownEvent : EventBase<InputStateManager>
+    public class MouseLeftDownEvent : EventBase
     {
-        private readonly InputStateManager _inputStateManager;
+        private readonly Func<InputStateManager> _inputStateManagerFunc;
 
-        public MouseLeftDownEvent(Action<InputStateManager> evt, InputStateManager inputStateManager) : base(evt)
+        public MouseLeftDownEvent(Action evt, Func<InputStateManager> inputState) : base(evt)
         {
-            this._inputStateManager = inputStateManager;
+            this._inputStateManagerFunc = inputState;
         }
 
         public override bool Check()
         {
-            var comparison = _inputStateManager.CompareMouse();
+            var inputStateManager = _inputStateManagerFunc.Invoke();
+            var comparison = inputStateManager.CompareMouse();
             var c = comparison.ButtonComparisions[MouseButtons.Left];
             if (c.OldState == ButtonState.Released &&
                 c.CurrentState == ButtonState.Pressed)
