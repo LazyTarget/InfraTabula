@@ -4,9 +4,9 @@ using XnaLibrary;
 
 namespace InfraTabula.Xna
 {
-    public class MouseLeftDownEvent : EventBase
+    public class MouseLeftUpEvent : EventBase
     {
-        public MouseLeftDownEvent(Action callback) : base(callback) { }
+        public MouseLeftUpEvent(Action callback) : base(callback) { }
 
 
         protected override bool Check()
@@ -14,8 +14,8 @@ namespace InfraTabula.Xna
             var inputStateManager = Game.InputState;
             var mouseComparison = inputStateManager.CompareMouse();
             var c = mouseComparison.ButtonComparisions[MouseButtons.Left];
-            if (c.OldState == ButtonState.Released &&
-                c.CurrentState == ButtonState.Pressed)
+            if (c.OldState == ButtonState.Pressed &&
+                c.CurrentState == ButtonState.Released)
                 return true;
             return false;
         }

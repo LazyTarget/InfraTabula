@@ -73,6 +73,12 @@
     <Compile Include="Components\ScreenManager.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Events\EventBase.cs" />
+    <Compile Include="Events\IEventBoundable.cs" />
+    <Compile Include="Events\KeyboardKeyUpEvent.cs" />
+    <Compile Include="Events\KeyboardKeyDownEvent.cs" />
+    <Compile Include="Events\MouseLeftUpEvent.cs" />
+    <Compile Include="Events\MouseRightUpEvent.cs" />
+    <Compile Include="Events\MouseRightDownEvent.cs" />
     <Compile Include="Events\MouseLeftDownEvent.cs" />
     <Compile Include="GameBase.cs" />
     <Compile Include="Graphics\ISprite.cs" />
