@@ -74,6 +74,8 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Events\EventBase.cs" />
     <Compile Include="Events\IEventBoundable.cs" />
+    <Compile Include="Events\MouseChangeEvent.cs" />
+    <Compile Include="Events\KeyboardChangeEvent.cs" />
     <Compile Include="Events\KeyboardKeyUpEvent.cs" />
     <Compile Include="Events\KeyboardKeyDownEvent.cs" />
     <Compile Include="Events\MouseLeftUpEvent.cs" />

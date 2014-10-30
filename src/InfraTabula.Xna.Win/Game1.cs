@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using XnaLibrary;
+using XnaLibrary.Input;
 using KeyEventArgs = XnaLibrary.KeyEventArgs;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
@@ -59,8 +61,10 @@ namespace InfraTabula.Xna.Win
 
         protected override void Initialize()
         {
-            var mouseDownEvent = new MouseLeftDownEvent(MouseLeftDown_Callback);
-            mouseDownEvent.Bind(this);
+            new MouseLeftDownEvent(MouseLeftDown_Callback).Bind(this);
+            new MouseLeftUpEvent(MouseLeftUp_Callback).Bind(this);
+            new KeyboardChangeEvent(KeyboardChange_Callback).Bind(this);
+            new KeyboardKeyDownEvent(KeyboardKeyDown_Enter_Callback, Keys.Enter).Bind(this);
 
             
             var screen = new ListScreen();
@@ -86,9 +90,31 @@ namespace InfraTabula.Xna.Win
             //    _sprites.Add(Sprite.GetRandom(GraphicsDevice));
         }
 
-        private void MouseLeftDown_Callback()
+        private void KeyboardChange_Callback(IEnumerable<KeyStateComparision> obj)
         {
-            Debug("MouseLeftDown_Callback()");
+            foreach (var s in obj)
+            {
+                Debug(string.Format("KeyboardChange_Callback() Key:{0}, Old:{1}, New:{2}", s.Key, s.OldState, s.CurrentState));
+            }
+        }
+
+        private void KeyboardKeyDown_Enter_Callback(KeyStateComparision state)
+        {
+            var keyboardState = state.GetKeyboardState();
+            Debug(string.Format("KeyboardKeyDown_Enter_Callback()"));
+        }
+
+
+        private void MouseLeftUp_Callback(MouseButtonStateComparision state)
+        {
+            var mouseState = state.GetMouseState();
+            Debug(string.Format("MouseLeftUp_Callback() X:{0} Y:{1}", mouseState.New.X, mouseState.New.Y));
+        }
+
+        private void MouseLeftDown_Callback(MouseButtonStateComparision state)
+        {
+            var mouseState = state.GetMouseState();
+            Debug(string.Format("MouseLeftDown_Callback() X:{0} Y:{1}", mouseState.New.X, mouseState.New.Y));
         }
 
 

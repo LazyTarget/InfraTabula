@@ -1,26 +1,31 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Input;
+using XnaLibrary.Input;
 
 namespace InfraTabula.Xna
 {
-    public class KeyboardKeyUpEvent : EventBase
+    public class KeyboardKeyUpEvent : EventBase<KeyStateComparision>
     {
         public Keys Key { get; private set; }
 
-        public KeyboardKeyUpEvent(Action callback, Keys key) : base(callback)
+        public KeyboardKeyUpEvent(Action<KeyStateComparision> callback, Keys key) : base(callback)
         {
             Key = key;
         }
 
 
-        protected override bool Check()
+        protected override bool Check(out KeyStateComparision arg)
         {
             var inputStateManager = Game.InputState;
             var keyComparison = inputStateManager.CompareKeyboard();
             var c = keyComparison.ButtonComparisions[Key];
             if (c.OldState == KeyState.Down &&
                 c.CurrentState == KeyState.Up)
+            {
+                arg = c;
                 return true;
+            }
+            arg = null;
             return false;
         }
     }
