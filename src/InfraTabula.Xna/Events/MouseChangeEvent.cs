@@ -16,7 +16,10 @@ namespace InfraTabula.Xna
 
         protected override bool Check(out IEnumerable<MouseButtonStateComparision> changes)
         {
-            var inputStateManager = Game.InputState;
+            changes = null;
+            var inputStateManager = Game.Services.GetService(typeof(InputStateManager)) as InputStateManager;
+            if (inputStateManager == null)
+                return false;
             var mouseComparison = inputStateManager.CompareMouse();
             changes = mouseComparison.ButtonComparisions.Where(x => x.Value.Changed).Select(x => x.Value).ToList();
             var c = changes.Any();

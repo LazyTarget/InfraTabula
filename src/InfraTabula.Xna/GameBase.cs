@@ -9,6 +9,13 @@ namespace InfraTabula.Xna
     public class GameBase : XnaAppBase, IEventBoundable     //Microsoft.Xna.Framework.Game
     {
         private readonly List<IEvent> _events = new List<IEvent>();
+        private MouseLeftDownEvent _mouseLeftDownEvent;
+
+        public GameBase()
+        {
+            ScreenManager = new ScreenManager(this);
+        }
+
 
         public API Api
         {
@@ -19,6 +26,9 @@ namespace InfraTabula.Xna
             }
         }
 
+        protected ScreenManager ScreenManager { get; private set; }
+
+
 
         public new InputStateManager InputState
         {
@@ -26,22 +36,33 @@ namespace InfraTabula.Xna
         }
 
 
-
-
-        protected override void Update(GameTime gameTime)
+        protected override void Initialize()
         {
-            base.Update(gameTime);
+            Services.AddService(typeof(InputStateManager), InputState);
 
+            Components.Add(ScreenManager);
+            
+            _mouseLeftDownEvent = new MouseLeftDownEvent(MouseLeftDown);
+            _mouseLeftDownEvent.Bind(this);
+
+
+            base.Initialize();
         }
 
 
-        protected override void HandleInput(GameTime gameTime, InputStateManager input)
+        protected override void LoadContent()
         {
-            base.HandleInput(gameTime, input);
-
-            foreach (var evt in _events)
-                evt.Update();
+            base.LoadContent();
         }
+
+
+        protected override void UnloadContent()
+        {
+            base.UnloadContent();
+
+            _mouseLeftDownEvent.Unbind();
+        }
+
 
 
         public void BindEvent(IEvent evt)
@@ -58,6 +79,49 @@ namespace InfraTabula.Xna
             //if (!removed)
             //    throw new InvalidOperationException("Event was not bound");
         }
+
+
+
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+        }
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+        }
+
+
+        protected override void HandleInput(GameTime gameTime, InputStateManager input)
+        {
+            base.HandleInput(gameTime, input);
+
+            foreach (var evt in _events)
+                evt.Update();
+        }
+
+
+        private void MouseLeftDown(MouseButtonStateComparision state)
+        {
+            var mouseState = state.GetMouseState();
+            var point = new Point(mouseState.New.X, mouseState.New.Y);
+            var sprite = ScreenManager.GetSpriteAt(point);
+            if (sprite == null)
+                return;
+
+            var baseSprite = sprite as Sprite;
+            if (baseSprite != null)
+            {
+                var args = new MouseDownEventArgs
+                {
+                    StateComparision = state,
+                };
+                baseSprite._InvokeClick(args);
+            }
+        }
+
 
 
     }

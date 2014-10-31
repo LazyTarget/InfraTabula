@@ -72,6 +72,7 @@
     <Compile Include="Components\GameScreen.cs" />
     <Compile Include="Components\ScreenManager.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Events\EventArgs\MouseDownEventArgs.cs" />
     <Compile Include="Events\EventBase.cs" />
     <Compile Include="Events\IEventBoundable.cs" />
     <Compile Include="Events\MouseChangeEvent.cs" />

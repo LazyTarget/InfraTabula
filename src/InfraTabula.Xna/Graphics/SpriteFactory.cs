@@ -6,10 +6,12 @@ namespace InfraTabula.Xna
     public class SpriteFactory
     {
         private readonly GraphicsDevice _graphicsDevice;
+        private readonly Game _game;
 
         public SpriteFactory(Game game)
         {
-            _graphicsDevice = game.GraphicsDevice;
+            _game = game;
+            _graphicsDevice = _game.GraphicsDevice;
         }
 
 
@@ -50,6 +52,11 @@ namespace InfraTabula.Xna
             where T : ISprite, new ()
         {
             var r = new T();
+            var sprite = r as Sprite;
+            if (sprite != null)
+            {
+                sprite.Game = _game;
+            }
             return r;
         }
 
@@ -57,6 +64,11 @@ namespace InfraTabula.Xna
             where T : ISprite
         {
             var r = (T) System.Activator.CreateInstance(typeof (T), args);
+            var sprite = r as Sprite;
+            if (sprite != null)
+            {
+                sprite.Game = _game;
+            }
             return r;
         }
 

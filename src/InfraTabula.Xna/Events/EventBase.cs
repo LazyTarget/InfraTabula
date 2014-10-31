@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace InfraTabula.Xna
 {
@@ -13,7 +14,7 @@ namespace InfraTabula.Xna
     {
         //public Action<EventBase> UpdateHandling { get; set; }
         protected Action Callback { get; private set; }
-        protected GameBase Game { get; private set; }
+        protected Game Game { get; private set; }
 
         protected EventBase(Action callback)
         {
@@ -23,7 +24,7 @@ namespace InfraTabula.Xna
         }
 
 
-        public void Bind(GameBase game)
+        public void Bind(Game game)
         {
             Game = game;
 
@@ -72,7 +73,7 @@ namespace InfraTabula.Xna
     {
         //public Action<EventBase> UpdateHandling { get; set; }
         protected Action<T> Callback { get; private set; }
-        protected GameBase Game { get; private set; }
+        protected Game Game { get; private set; }
 
         protected EventBase(Action<T> callback)
         {
@@ -82,7 +83,7 @@ namespace InfraTabula.Xna
         }
 
 
-        public void Bind(GameBase game)
+        public void Bind(Game game)
         {
             // todo: Bind on IEventBoundable objects (ex MouseClick on Sprite)
 

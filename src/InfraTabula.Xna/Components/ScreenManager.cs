@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XnaLibrary.Input;
@@ -307,6 +308,26 @@ namespace InfraTabula.Xna
             spriteBatch.End();
         }
 
+
+
+        public ISprite GetSpriteAt(Point point)
+        {
+            var matchingSprites = new List<ISprite>();
+            var screens = GetScreens().Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
+            foreach (var screen in screens)
+            {
+                foreach (var s in screen.Sprites)
+                {
+                    var contains = s.Bounds.Contains(point);
+                    if (contains)
+                        matchingSprites.Add(s);
+                }
+                if (matchingSprites.Any())
+                    break;
+            }
+            var sprite = matchingSprites.FirstOrDefault();
+            return sprite;
+        }
 
         #endregion
     }

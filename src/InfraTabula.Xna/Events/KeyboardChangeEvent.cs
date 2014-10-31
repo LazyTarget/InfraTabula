@@ -15,7 +15,10 @@ namespace InfraTabula.Xna
 
         protected override bool Check(out IEnumerable<KeyStateComparision> changes)
         {
-            var inputStateManager = Game.InputState;
+            changes = null;
+            var inputStateManager = Game.Services.GetService(typeof(InputStateManager)) as InputStateManager;
+            if (inputStateManager == null)
+                return false;
             var keyComparison = inputStateManager.CompareKeyboard();
             changes = keyComparison.ButtonComparisions.Where(x => x.Value.Changed).Select(x => x.Value).ToList();
             var c = changes.Any();

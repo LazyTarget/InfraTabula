@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using XnaLibrary;
 using XnaLibrary.Input;
-using KeyEventArgs = XnaLibrary.KeyEventArgs;
-using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace InfraTabula.Xna.Win
 {
@@ -16,33 +10,17 @@ namespace InfraTabula.Xna.Win
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-
-            ////// Mouse
-            //////base.OnMouseDown += _OnMouseDown;
-            ////base.OnMouseUp += _OnMouseUp;
-
-            ////// Keyboard
-            ////base.OnKeyDown += _OnKeyDown;
-            ////base.OnKeyUp += _OnKeyUp;
-
-            ////// GamePad
-            ////base.OnButtonDown += _OnButtonDown;
-            ////base.OnButtonUp += _OnButtonUp;
-
+            
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
-
-            _screenManager = new ScreenManager(this);
         }
 
 
         //private readonly Color _backColor = XnaLibrary.Extensions.FromColor(System.Drawing.SystemColors.Control);
         private readonly Color _backColor = Color.CornflowerBlue;
         private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-        private readonly List<ISprite> _sprites = new List<ISprite>();
+        //private readonly List<ISprite> _sprites = new List<ISprite>();
         private int _velocity = 5;
-        private readonly ScreenManager _screenManager;
 
 
 
@@ -59,34 +37,12 @@ namespace InfraTabula.Xna.Win
 
         protected override void Initialize()
         {
-            new MouseLeftDownEvent(MouseLeftDown_Callback).Bind(this);
-            new MouseLeftUpEvent(MouseLeftUp_Callback).Bind(this);
-            new KeyboardChangeEvent(KeyboardChange_Callback).Bind(this);
-            new KeyboardKeyDownEvent(KeyboardKeyDown_Enter_Callback, Keys.Enter).Bind(this);
-
+            var listScreen = new ListScreen();
+            ScreenManager.AddScreen(listScreen);
             
-            var screen = new ListScreen();
-            _screenManager.AddScreen(screen);
-
-            Components.Add(_screenManager);
-
             base.Initialize();
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-
-
-
-            //API.Authenticate();
-            //var items = API.GetItems().ToList();
-
-
-            //_sprites.Add(new Sprite(CreateRectangle(GraphicsDevice.Viewport.Width - 10, 10, Color.Lime), Color.Lime, new Vector2(5, 5)));
-            //_sprites.Add(Sprite.GetRandom(GraphicsDevice));
-            //_sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Blue), Color.Blue, new Vector2(10, 20)));
-            //_sprites.Add(new Sprite(CreateRectangle(70, 150, Color.Red), Color.Red, new Vector2(90, 70)));
-            //for (var i = 0; i < 5; i++)
-            //    _sprites.Add(Sprite.GetRandom(GraphicsDevice));
         }
+
 
         private void KeyboardChange_Callback(IEnumerable<KeyStateComparision> obj)
         {
@@ -149,12 +105,12 @@ namespace InfraTabula.Xna.Win
         {
             _graphics.GraphicsDevice.Clear(_backColor);
 
-            _spriteBatch.Begin();
+            //_spriteBatch.Begin();
 
-            foreach (var s in _sprites)
-                s.Draw(_spriteBatch);
+            //foreach (var s in _sprites)
+            //    s.Draw(_spriteBatch);
 
-            _spriteBatch.End();
+            //_spriteBatch.End();
 
 
             base.Draw(gameTime);
@@ -167,102 +123,102 @@ namespace InfraTabula.Xna.Win
         #region Input management
 
 
-        private void _OnMouseDown(object sender, MouseButtonEventArgs args)
-        {
+        //private void _OnMouseDown(object sender, MouseButtonEventArgs args)
+        //{
 
-        }
-        private void _OnMouseUp(object sender, MouseButtonEventArgs args)
-        {
+        //}
+        //private void _OnMouseUp(object sender, MouseButtonEventArgs args)
+        //{
 
-        }
-
-
-        private void _OnKeyDown(object sender, KeyEventArgs args)
-        {
-            var stateTracker = (KeyboardStateTracker) sender;
-            var state = (KeyboardState) stateTracker.GetCurrentState();
-            if (state.IsKeyDown(Keys.LeftAlt) && state.IsKeyDown(Keys.Enter))
-            {
-                _graphics.ToggleFullScreen();
-                Debug("IsFullScreen " + _graphics.IsFullScreen);
-                //Debug("Viewport: " + Newtonsoft.Json.JsonConvert.SerializeObject(_graphics.GraphicsDevice.Viewport));
-            }
-
-            //if (args.Key == Keys.Up)
-            //    GoUp();
-            //else if (args.Key == Keys.Right)
-            //    GoRight();
-            //else if (args.Key == Keys.Down)
-            //    GoDown();
-            //else if (args.Key == Keys.Left)
-            //    GoLeft();
-        }
-
-        private void _OnKeyUp(object sender, KeyEventArgs args)
-        {
-
-        }
+        //}
 
 
-        private void _OnButtonDown(object sender, GamePadButtonEventArgs args)
-        {
-            if (args.Button.HasFlag(Buttons.DPadUp))
-                GoUp();
-            else if (args.Button.HasFlag(Buttons.DPadRight))
-                GoRight();
-            else if (args.Button.HasFlag(Buttons.DPadDown))
-                GoDown();
-            else if (args.Button.HasFlag(Buttons.DPadLeft))
-                GoLeft();
-        }
+        //private void _OnKeyDown(object sender, KeyEventArgs args)
+        //{
+        //    var stateTracker = (KeyboardStateTracker) sender;
+        //    var state = (KeyboardState) stateTracker.GetCurrentState();
+        //    if (state.IsKeyDown(Keys.LeftAlt) && state.IsKeyDown(Keys.Enter))
+        //    {
+        //        _graphics.ToggleFullScreen();
+        //        Debug("IsFullScreen " + _graphics.IsFullScreen);
+        //        //Debug("Viewport: " + Newtonsoft.Json.JsonConvert.SerializeObject(_graphics.GraphicsDevice.Viewport));
+        //    }
 
-        private void _OnButtonUp(object sender, GamePadButtonEventArgs args)
-        {
+        //    //if (args.Key == Keys.Up)
+        //    //    GoUp();
+        //    //else if (args.Key == Keys.Right)
+        //    //    GoRight();
+        //    //else if (args.Key == Keys.Down)
+        //    //    GoDown();
+        //    //else if (args.Key == Keys.Left)
+        //    //    GoLeft();
+        //}
 
-        }
+        //private void _OnKeyUp(object sender, KeyEventArgs args)
+        //{
+
+        //}
+
+
+        //private void _OnButtonDown(object sender, GamePadButtonEventArgs args)
+        //{
+        //    if (args.Button.HasFlag(Buttons.DPadUp))
+        //        GoUp();
+        //    else if (args.Button.HasFlag(Buttons.DPadRight))
+        //        GoRight();
+        //    else if (args.Button.HasFlag(Buttons.DPadDown))
+        //        GoDown();
+        //    else if (args.Button.HasFlag(Buttons.DPadLeft))
+        //        GoLeft();
+        //}
+
+        //private void _OnButtonUp(object sender, GamePadButtonEventArgs args)
+        //{
+
+        //}
 
 
         #endregion
 
 
 
-        private void GoUp()
-        {
-            Debug("GoUp()");
-            foreach (var s in _sprites)
-            {
-                s.Position = new Vector2(s.Position.X, Math.Max(0, s.Position.Y - _velocity));
-            }
-        }
+        //private void GoUp()
+        //{
+        //    Debug("GoUp()");
+        //    foreach (var s in _sprites)
+        //    {
+        //        s.Position = new Vector2(s.Position.X, Math.Max(0, s.Position.Y - _velocity));
+        //    }
+        //}
 
-        private void GoRight()
-        {
-            Debug("GoRight()");
-            foreach (var s in _sprites)
-            {
-                s.Position = new Vector2(Math.Min(GraphicsDevice.Viewport.Width - s.Bounds.Width, s.Position.X + _velocity),
-                    s.Position.Y);
-            }
-        }
+        //private void GoRight()
+        //{
+        //    Debug("GoRight()");
+        //    foreach (var s in _sprites)
+        //    {
+        //        s.Position = new Vector2(Math.Min(GraphicsDevice.Viewport.Width - s.Bounds.Width, s.Position.X + _velocity),
+        //            s.Position.Y);
+        //    }
+        //}
 
-        private void GoDown()
-        {
-            Debug("GoDown()");
-            foreach (var s in _sprites)
-            {
-                s.Position = new Vector2(s.Position.X,
-                    Math.Min(GraphicsDevice.Viewport.Height - s.Bounds.Height, s.Position.Y + _velocity));
-            }
-        }
+        //private void GoDown()
+        //{
+        //    Debug("GoDown()");
+        //    foreach (var s in _sprites)
+        //    {
+        //        s.Position = new Vector2(s.Position.X,
+        //            Math.Min(GraphicsDevice.Viewport.Height - s.Bounds.Height, s.Position.Y + _velocity));
+        //    }
+        //}
 
-        private void GoLeft()
-        {
-            Debug("GoLeft()");
-            foreach (var s in _sprites)
-            {
-                s.Position = new Vector2(Math.Max(0, s.Position.X - _velocity), s.Position.Y);
-            }
-        }
+        //private void GoLeft()
+        //{
+        //    Debug("GoLeft()");
+        //    foreach (var s in _sprites)
+        //    {
+        //        s.Position = new Vector2(Math.Max(0, s.Position.X - _velocity), s.Position.Y);
+        //    }
+        //}
 
 
 

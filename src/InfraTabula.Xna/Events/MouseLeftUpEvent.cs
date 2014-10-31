@@ -12,7 +12,10 @@ namespace InfraTabula.Xna
 
         protected override bool Check(out MouseButtonStateComparision arg)
         {
-            var inputStateManager = Game.InputState;
+            arg = null;
+            var inputStateManager = Game.Services.GetService(typeof(InputStateManager)) as InputStateManager;
+            if (inputStateManager == null)
+                return false;
             var mouseComparison = inputStateManager.CompareMouse();
             var c = mouseComparison.ButtonComparisions[MouseButtons.Left];
             if (c.OldState == ButtonState.Pressed &&
@@ -21,7 +24,6 @@ namespace InfraTabula.Xna
                 arg = c;
                 return true;
             }
-            arg = null;
             return false;
         }
     }

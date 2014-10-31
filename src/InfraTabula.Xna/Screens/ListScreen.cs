@@ -8,7 +8,6 @@ namespace InfraTabula.Xna
     public class ListScreen : GameScreen
     {
         private List<Item> _items;
-        private List<ISprite> _sprites; 
 
 
         public override void LoadContent()
@@ -20,7 +19,7 @@ namespace InfraTabula.Xna
             _items = items.ToList();
 
 
-            _sprites = new List<ISprite>();
+            Sprites.Clear();
             var spriteFactory = new SpriteFactory(ScreenManager.Game);
             var prevPos = Vector2.Zero;
             foreach (var item in _items)
@@ -31,7 +30,7 @@ namespace InfraTabula.Xna
 
                 s.Position = prevPos;
                 prevPos = new Vector2(prevPos.X + s.Bounds.Width, prevPos.Y);
-                _sprites.Add(s);
+                Sprites.Add(s);
             }
         }
 
@@ -40,16 +39,16 @@ namespace InfraTabula.Xna
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
-            foreach (var s in _sprites)
-                s.Update(gameTime);
+            //foreach (var s in _sprites)
+            //    s.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            foreach (var s in _sprites)
-                s.Draw(ScreenManager.SpriteBatch);
+            //foreach (var s in _sprites)
+            //    s.Draw(ScreenManager.SpriteBatch);
         }
 
 

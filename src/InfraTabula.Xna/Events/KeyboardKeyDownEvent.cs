@@ -16,7 +16,10 @@ namespace InfraTabula.Xna
 
         protected override bool Check(out KeyStateComparision arg)
         {
-            var inputStateManager = Game.InputState;
+            arg = null;
+            var inputStateManager = Game.Services.GetService(typeof(InputStateManager)) as InputStateManager;
+            if (inputStateManager == null)
+                return false;
             var keyComparison = inputStateManager.CompareKeyboard();
             var c = keyComparison.ButtonComparisions[Key];
             if (c.OldState == KeyState.Up &&
@@ -25,7 +28,6 @@ namespace InfraTabula.Xna
                 arg = c;
                 return true;
             }
-            arg = null;
             return false;
         }
     }

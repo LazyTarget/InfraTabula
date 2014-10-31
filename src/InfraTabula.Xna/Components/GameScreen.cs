@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using XnaLibrary.Input;
 
@@ -13,8 +14,16 @@ namespace InfraTabula.Xna
     /// </summary>
     public abstract class GameScreen
     {
+        protected GameScreen()
+        {
+            Sprites = new List<ISprite>();
+        }
+
+
         #region Properties
 
+
+        public List<ISprite> Sprites { get; private set; }
 
         /// <summary>
         /// Normally when one screen is brought up over the top of another,
@@ -137,13 +146,7 @@ namespace InfraTabula.Xna
         /// <summary>
         /// Gets the manager that this screen belongs to.
         /// </summary>
-        public ScreenManager ScreenManager
-        {
-            get { return screenManager; }
-            internal set { screenManager = value; }
-        }
-
-        ScreenManager screenManager;
+        public ScreenManager ScreenManager { get; internal set; }
 
 
         ///// <summary>
@@ -261,6 +264,13 @@ namespace InfraTabula.Xna
                     screenState = ScreenState.Active;
                 }
             }
+
+
+
+            // todo: implement transitions
+
+            foreach (var s in Sprites)
+                s.Update(gameTime);
         }
 
 
@@ -305,7 +315,11 @@ namespace InfraTabula.Xna
         /// <summary>
         /// This is called when the screen should draw itself.
         /// </summary>
-        public virtual void Draw(GameTime gameTime) { }
+        public virtual void Draw(GameTime gameTime)
+        {
+            foreach (var s in Sprites)
+                s.Draw(ScreenManager.SpriteBatch);
+        }
 
 
         #endregion
