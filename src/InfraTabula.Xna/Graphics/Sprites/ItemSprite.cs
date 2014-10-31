@@ -28,8 +28,7 @@ namespace InfraTabula.Xna
         protected override void OnClick(MouseDownEventArgs args)
         {
             Position = new Vector2(Position.X, Position.Y + 2);
-
-            base.OnClick(args);
+            args.Handled = true;
         }
     }
 }

@@ -230,6 +230,20 @@ namespace InfraTabula.Xna
 
         #endregion
 
+
+        internal void _InvokeKeyboardChange(KeyboardChangeEventArgs args)
+        {
+            var screens = GetScreens().Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
+            foreach (var screen in screens)
+            {
+                if (args.Handled)
+                    break;
+                screen._InvokeKeyboardChange(args);
+            }
+        }
+
+
+
         #region Public Methods
 
 

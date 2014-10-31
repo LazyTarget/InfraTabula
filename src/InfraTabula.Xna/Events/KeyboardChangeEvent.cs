@@ -5,23 +5,31 @@ using XnaLibrary.Input;
 
 namespace InfraTabula.Xna
 {
-    public class KeyboardChangeEvent : EventBase<IEnumerable<KeyStateComparision>>
+    public class KeyboardChangeEvent : EventBase<KeyboardChangeEventArgs>
     {
-        public KeyboardChangeEvent(Action<IEnumerable<KeyStateComparision>> callback) : base(callback)
+        public KeyboardChangeEvent(Action<KeyboardChangeEventArgs> callback)
+            : base(callback)
         {
             
         }
 
 
-        protected override bool Check(out IEnumerable<KeyStateComparision> changes)
+        protected override bool Check(out KeyboardChangeEventArgs args)
         {
-            changes = null;
+            args = null;
             var inputStateManager = Game.Services.GetService(typeof(InputStateManager)) as InputStateManager;
             if (inputStateManager == null)
                 return false;
             var keyComparison = inputStateManager.CompareKeyboard();
-            changes = keyComparison.ButtonComparisions.Where(x => x.Value.Changed).Select(x => x.Value).ToList();
-            var c = changes.Any();
+            var stateComparisons = keyComparison.ButtonComparisions
+                .Where(x => x.Value.Changed)
+                .ToDictionary(x => x.Key, x => x.Value);
+            
+            args = new KeyboardChangeEventArgs
+            {
+                StateComparisions = stateComparisons
+            };
+            var c = args.StateComparisions.Any();
             return c;
         }
     }

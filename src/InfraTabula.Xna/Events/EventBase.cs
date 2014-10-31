@@ -6,7 +6,12 @@ namespace InfraTabula.Xna
     public interface IEvent
     {
         void Update();
+
         //bool Check();
+
+        void Bind(Game game);
+
+        void Unbind();
     }
 
 
@@ -131,6 +136,14 @@ namespace InfraTabula.Xna
 
     public static class EventExtensions
     {
+        public static TEvent Bind<TEvent>(this TEvent evt, Game game)
+            where TEvent : IEvent
+        {
+            evt.Bind(game);
+            return evt;
+        }
+
+
         public static void SetUpdateHandling<T>(this T evt, Action<T> updateHandling)
             where T : EventBase
         {

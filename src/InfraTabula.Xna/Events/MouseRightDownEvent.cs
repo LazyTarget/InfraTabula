@@ -5,13 +5,14 @@ using XnaLibrary.Input;
 
 namespace InfraTabula.Xna
 {
-    public class MouseRightDownEvent : EventBase
+    public class MouseRightDownEvent : EventBase<MouseButtonStateComparision>
     {
-        public MouseRightDownEvent(Action callback) : base(callback) { }
+        public MouseRightDownEvent(Action<MouseButtonStateComparision> callback) : base(callback) { }
         
 
-        protected override bool Check()
+        protected override bool Check(out MouseButtonStateComparision arg)
         {
+            arg = null;
             var inputStateManager = Game.Services.GetService(typeof (InputStateManager)) as InputStateManager;
             if (inputStateManager == null)
                 return false;
@@ -19,7 +20,10 @@ namespace InfraTabula.Xna
             var c = mouseComparison.ButtonComparisions[MouseButtons.Right];
             if (c.OldState == ButtonState.Released &&
                 c.CurrentState == ButtonState.Pressed)
+            {
+                arg = c;
                 return true;
+            }
             return false;
         }
     }

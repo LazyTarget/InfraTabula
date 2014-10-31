@@ -6,6 +6,9 @@ namespace InfraTabula.Xna
 {
     public class Sprite : ISprite
     {
+        public event EventHandler<MouseDownEventArgs> OnClicked;
+ 
+
         public Sprite()
         {
 
@@ -55,6 +58,9 @@ namespace InfraTabula.Xna
         internal void _InvokeClick(MouseDownEventArgs args)
         {
             OnClick(args);
+
+            if (OnClicked != null)
+                OnClicked(this, args);
         }
 
         protected virtual void OnClick(MouseDownEventArgs args)

@@ -312,6 +312,17 @@ namespace InfraTabula.Xna
         public virtual void HandleInput(InputState input) { }
 
 
+        internal void _InvokeKeyboardChange(KeyboardChangeEventArgs args)
+        {
+            OnKeyboardChange(args);
+        }
+
+        public virtual void OnKeyboardChange(KeyboardChangeEventArgs args)
+        {
+            
+        }
+
+
         /// <summary>
         /// This is called when the screen should draw itself.
         /// </summary>
