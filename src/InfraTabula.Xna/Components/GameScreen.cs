@@ -128,6 +128,12 @@ namespace InfraTabula.Xna
         bool otherScreenHasFocus;
 
 
+        public GameBase Game
+        {
+            get { return ScreenManager.Game; }
+        }
+
+
         /// <summary>
         /// Gets the manager that this screen belongs to.
         /// </summary>

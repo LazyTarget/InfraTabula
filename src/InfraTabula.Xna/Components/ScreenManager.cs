@@ -67,6 +67,13 @@ namespace InfraTabula.Xna
         }
 
 
+
+        public new GameBase Game
+        {
+            get { return (GameBase) base.Game; }
+        }
+
+
         #endregion
 
         #region Initialization

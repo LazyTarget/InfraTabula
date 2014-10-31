@@ -29,6 +29,7 @@ namespace InfraTabula.Xna.Win
             ////base.OnButtonDown += _OnButtonDown;
             ////base.OnButtonUp += _OnButtonUp;
 
+            IsMouseVisible = true;
             Window.AllowUserResizing = true;
 
             _screenManager = new ScreenManager(this);
@@ -43,9 +44,6 @@ namespace InfraTabula.Xna.Win
         private int _velocity = 5;
         private readonly ScreenManager _screenManager;
 
-
-
-        protected API API { get { return API.Instance; } }
 
 
 

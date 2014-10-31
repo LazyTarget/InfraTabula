@@ -7,7 +7,7 @@ namespace InfraTabula.Xna
 {
     public class ListScreen : GameScreen
     {
-        private List<PocketAPI.Item> _items;
+        private List<Item> _items;
         private List<ISprite> _sprites; 
 
 
@@ -15,8 +15,10 @@ namespace InfraTabula.Xna
         {
             base.LoadContent();
 
-            var items = API.Instance.GetItems();
+            
+            var items = Game.Api.GetItems();
             _items = items.ToList();
+
 
             _sprites = new List<ISprite>();
             var spriteFactory = new SpriteFactory(ScreenManager.Game);

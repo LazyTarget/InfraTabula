@@ -6,12 +6,12 @@ namespace InfraTabula.Xna
 {
     public class ItemSprite : Sprite
     {
-        public ItemSprite(PocketAPI.Item item)
+        public ItemSprite(Item item)
         {
             Item = item;
         }
 
-        public PocketAPI.Item Item { get; private set; }
+        public Item Item { get; private set; }
 
         
         

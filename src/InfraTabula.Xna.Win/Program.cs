@@ -5,6 +5,9 @@ namespace InfraTabula.Xna.Win
     static class Program
     {
         public static Game1 GameInstance;
+        
+        public static API API;
+
 
 
         /// <summary>
@@ -13,7 +16,11 @@ namespace InfraTabula.Xna.Win
         [STAThread]
         static void Main()
         {
+            API = new PocketApi();
+
             GameInstance = new Game1();
+            GameInstance.Services.AddService(typeof (API), API);
+
             GameInstance.Run();
         }
 

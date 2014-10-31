@@ -10,11 +10,22 @@ namespace InfraTabula.Xna
     {
         private readonly List<IEvent> _events = new List<IEvent>();
 
+        public API Api
+        {
+            get
+            {
+                var api = Services.GetService(typeof (API)) as API;
+                return api;
+            }
+        }
+
 
         public new InputStateManager InputState
         {
             get { return base.InputState; }
         }
+
+
 
 
         protected override void Update(GameTime gameTime)
