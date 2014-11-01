@@ -7,7 +7,7 @@ namespace InfraTabula.Xna
     public class Sprite : ISprite
     {
         public event EventHandler<MouseDownEventArgs> OnClicked;
- 
+
 
         public Sprite()
         {

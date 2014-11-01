@@ -11,6 +11,19 @@ namespace InfraTabula.Xna
         private List<Item> _items;
         private ItemSprite _focusedItemSprite;
 
+        public ItemSprite FocusedItem
+        {
+            get { return _focusedItemSprite; }
+            private set
+            {
+                if (_focusedItemSprite != null)
+                    _focusedItemSprite.SpriteTexture.TrySetTextureState("default");
+
+                _focusedItemSprite = value;
+                _focusedItemSprite.SpriteTexture.TrySetTextureState("focused");
+            }
+        }
+
 
 
         public override void LoadContent()
@@ -28,11 +41,19 @@ namespace InfraTabula.Xna
             foreach (var item in _items)
             {
                 var s = spriteFactory.Create<ItemSprite>(item);
-                var texture = spriteFactory.CreateFilledRectangle(100, 50, Utils.RandomColor());
-                s.SpriteTexture = texture;
+                var defaultTexture = spriteFactory.CreateFilledRectangle(100, 50, Utils.RandomColor());
+                defaultTexture.Color = Color.Green;
+                var focusedTexture = spriteFactory.CreateFilledRectangle(100, 50, Color.Orange);
+                //s.SpriteTexture = defaultTexture;
+                s.SpriteTexture = new MultiStateSpriteTexture2D<string>(new Dictionary<string, ISpriteTexture>
+                {
+                    { "default", defaultTexture },
+                    { "focused", focusedTexture }
+                });
+
                 s.OnClicked += (sender, args) =>
                 {
-                    _focusedItemSprite = s;
+                    FocusedItem = s;
                 };
 
                 s.Position = prevPos;
@@ -86,7 +107,7 @@ namespace InfraTabula.Xna
                     {
                         var newItem = _items.ElementAt(index);
                         var itemSprite = Sprites.OfType<ItemSprite>().SingleOrDefault(x => x.Item == newItem);
-                        _focusedItemSprite = itemSprite;
+                        FocusedItem = itemSprite;
                     }
             }
 

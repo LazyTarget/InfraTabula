@@ -81,7 +81,9 @@ namespace InfraTabula.Xna
             for (int i = 0; i < color.Length; i++)                                          //loop through all the colors setting them to whatever values we want
                 color[i] = colori;
             rectangleTexture.SetData(color);                                                //set the color data on the texture
+            
             var spriteTexture = new SpriteTexture2D(rectangleTexture);
+            spriteTexture.Color = colori;
             return spriteTexture;
         }
 
