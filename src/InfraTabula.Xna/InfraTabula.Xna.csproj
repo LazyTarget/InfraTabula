@@ -121,6 +121,7 @@
   <ItemGroup>
     <Compile Include="Browser\BoundObject.cs" />
     <Compile Include="Browser\DownloadHandler.cs" />
+    <Compile Include="Browser\KeyboardHandler.cs" />
     <Compile Include="Browser\RequestHandler.cs" />
     <Compile Include="Browser\SimpleBrowserForm.cs">
       <SubType>Form</SubType>

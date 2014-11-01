@@ -65,7 +65,7 @@ namespace InfraTabula.Xna
 
         private void ExitApplication()
         {
-            Cef.Shutdown();
+            //Cef.Shutdown();
             Close();
         }
 

@@ -11,7 +11,7 @@ namespace InfraTabula.Xna
 {
     public partial class SimpleBrowserForm : Form
     {
-        private ChromiumWebBrowser browser;
+        public ChromiumWebBrowser Browser { get; private set; }
 
         public SimpleBrowserForm(string url)
         {
@@ -33,18 +33,20 @@ namespace InfraTabula.Xna
 
         private void CreateBrowser(string url)
         {
-            browser = new ChromiumWebBrowser(url)
+            Browser = new ChromiumWebBrowser(url)
             {
                 Dock = DockStyle.Fill,
             };
-            toolStripContainer.ContentPanel.Controls.Add(browser);
+            toolStripContainer.ContentPanel.Controls.Add(Browser);
 
-            browser.NavStateChanged += OnBrowserNavStateChanged;
-            browser.ConsoleMessage += OnBrowserConsoleMessage;
-            browser.StatusMessage += OnBrowserStatusMessage;
-            browser.TitleChanged += OnBrowserTitleChanged;
-            browser.AddressChanged += OnBrowserAddressChanged;
+            Browser.NavStateChanged += OnBrowserNavStateChanged;
+            Browser.ConsoleMessage += OnBrowserConsoleMessage;
+            Browser.StatusMessage += OnBrowserStatusMessage;
+            Browser.TitleChanged += OnBrowserTitleChanged;
+            Browser.AddressChanged += OnBrowserAddressChanged;
+            Browser.KeyboardHandler = new KeyboardHandler();
         }
+
 
         private void OnBrowserConsoleMessage(object sender, ConsoleMessageEventArgs args)
         {
@@ -73,6 +75,8 @@ namespace InfraTabula.Xna
         {
             this.InvokeOnUiThreadIfRequired(() => urlTextBox.Text = args.Address);
         }
+
+
 
         private void SetCanGoBack(bool canGoBack)
         {
@@ -121,7 +125,7 @@ namespace InfraTabula.Xna
 
         private void ExitMenuItemClick(object sender, EventArgs e)
         {
-            browser.Dispose();
+            Browser.Dispose();
             Cef.Shutdown();
             Close();
         }
@@ -133,12 +137,12 @@ namespace InfraTabula.Xna
 
         private void BackButtonClick(object sender, EventArgs e)
         {
-            browser.Back();
+            Browser.Back();
         }
 
         private void ForwardButtonClick(object sender, EventArgs e)
         {
-            browser.Forward();
+            Browser.Forward();
         }
 
         private void UrlTextBoxKeyUp(object sender, KeyEventArgs e)
@@ -155,8 +159,19 @@ namespace InfraTabula.Xna
         {
             if (Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
             {
-                browser.Load(url);
+                Browser.Load(url);
             }
+        }
+
+        public int GetVerticalScrollPosition()
+        {
+            var r = Browser.EvaluateScript(@"document.body.scrollTop");
+            return Convert.ToInt32(r);
+        }
+
+        public void SetVerticalScrollPosition(int pos)
+        {
+            Browser.ExecuteScriptAsync(string.Format(@"document.body.scrollTop = {0}", pos));
         }
     }
 }
