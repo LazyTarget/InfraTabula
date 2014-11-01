@@ -335,6 +335,27 @@ namespace InfraTabula.Xna
 
         #endregion
 
+
+        #region Protected
+
+        public Vector2 GetRelative(float percentageX, float percentageY)
+        {
+            //var max = new Point(
+            //    Game.GraphicsDevice.Viewport.Width,
+            //    Game.GraphicsDevice.Viewport.Height);
+            var max = new Point(
+                GraphicsDeviceManager.DefaultBackBufferWidth,
+                GraphicsDeviceManager.DefaultBackBufferHeight);
+            var x = max.X * percentageX;
+            var y = max.Y * percentageY;
+            var pnt = new Vector2(x, y);
+            return pnt;
+        }
+
+
+        #endregion
+
+
         #region Public Methods
 
 

@@ -80,6 +80,7 @@
     <Compile Include="Events\KeyboardChangeEvent.cs" />
     <Compile Include="Events\KeyboardKeyUpEvent.cs" />
     <Compile Include="Events\KeyboardKeyDownEvent.cs" />
+    <Compile Include="Events\MouseMoveEvent.cs" />
     <Compile Include="Events\MouseLeftUpEvent.cs" />
     <Compile Include="Events\MouseRightUpEvent.cs" />
     <Compile Include="Events\MouseRightDownEvent.cs" />

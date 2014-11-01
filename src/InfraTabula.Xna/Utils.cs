@@ -27,5 +27,21 @@ namespace InfraTabula.Xna
             return color;
         }
 
+
+
+        public static Vector2 ToVector2(this Point point)
+        {
+            var res = new Vector2(point.X, point.Y);
+            return res;
+        }
+
+        public static Point ToPoint(this Vector2 vector)
+        {
+            var res = new Point(
+                (int) Math.Round(vector.X),
+                (int) Math.Round(vector.Y));
+            return res;
+        }
+
     }
 }

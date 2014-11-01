@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -27,8 +28,9 @@ namespace InfraTabula.Xna
         private Texture2D blankTexture;
 
         private bool isInitialized;
-
         private bool traceEnabled;
+
+        private Vector2 _scale;
 
         #endregion
 
@@ -98,8 +100,9 @@ namespace InfraTabula.Xna
         public override void Initialize()
         {
             base.Initialize();
-
             isInitialized = true;
+
+            Game.Window.ClientSizeChanged += Window_OnClientSizeChanged;
         }
 
 
@@ -139,6 +142,17 @@ namespace InfraTabula.Xna
         #endregion
 
         #region Update and Draw
+
+        private void Window_OnClientSizeChanged(object sender, EventArgs args)
+        {
+            //var scale = (double) Game.Window.ClientBounds.Width/
+            //            (double) Game.Window.ClientBounds.Height;
+            //var ratio = GraphicsDevice.Viewport.AspectRatio;
+
+            //Game.GraphicsDeviceManager.PreferredBackBufferWidth = GraphicsDevice.Viewport.Width;
+            //Game.GraphicsDeviceManager.PreferredBackBufferHeight = GraphicsDevice.Viewport.Height;
+            //Game.GraphicsDeviceManager.ApplyChanges();
+        }
 
 
         /// <summary>
@@ -214,7 +228,26 @@ namespace InfraTabula.Xna
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            SpriteBatch.Begin();
+            var defaultscale = (float)GraphicsDeviceManager.DefaultBackBufferWidth /
+                               (float)GraphicsDeviceManager.DefaultBackBufferHeight;
+            //var scale = (float)GraphicsDeviceManager.PreferredBackBufferWidth /
+            //            (float)GraphicsDeviceManager.PreferredBackBufferHeight;
+            //_scale = (float)GraphicsDevice.Viewport.Width /
+            //                  GraphicsDeviceManager.DefaultBackBufferWidth;
+            _scale = new Vector2(
+                GraphicsDevice.Viewport.Width/(float) GraphicsDeviceManager.DefaultBackBufferWidth,
+                GraphicsDevice.Viewport.Height/(float) GraphicsDeviceManager.DefaultBackBufferHeight);
+            var matrixScale = Matrix.CreateScale(_scale.X, _scale.Y, 1);
+
+            //SpriteBatch.Begin();
+            //if (DateTime.Now.Second > 30)
+            //{
+            SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, matrixScale);
+            //}
+            //else
+            //{
+            //    SpriteBatch.Begin();
+            //}
 
             foreach (GameScreen screen in screens)
             {
@@ -332,7 +365,13 @@ namespace InfraTabula.Xna
             {
                 foreach (var s in screen.Sprites)
                 {
-                    var contains = s.Bounds.Contains(point);
+                    var rect = s.Bounds;
+                    rect = new Rectangle(
+                        (int) Math.Round(rect.X * _scale.X),
+                        (int) Math.Round(rect.Y * _scale.Y),
+                        (int) Math.Round(rect.Width * _scale.X),
+                        (int) Math.Round(rect.Height * _scale.Y));
+                    var contains = rect.Contains(point);
                     if (contains)
                         matchingSprites.Add(s);
                 }

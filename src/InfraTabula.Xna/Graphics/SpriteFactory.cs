@@ -73,6 +73,11 @@ namespace InfraTabula.Xna
         }
 
 
+        public SpriteTexture2D CreateFilledRectangle(Point size, Color colori)
+        {
+            var spriteTexture = CreateFilledRectangle(size.X, size.Y, colori);
+            return spriteTexture;
+        }
 
         public SpriteTexture2D CreateFilledRectangle(int width, int height, Color colori)
         {

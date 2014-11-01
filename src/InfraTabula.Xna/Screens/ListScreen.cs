@@ -32,18 +32,19 @@ namespace InfraTabula.Xna
 
             
             var items = Game.Api.GetItems();
-            _items = items.ToList();
+            _items = items.Take(8).ToList();
 
 
             Sprites.Clear();
             var spriteFactory = new SpriteFactory(ScreenManager.Game);
-            var prevPos = Vector2.Zero;
+            var prevPos = GetRelative(0.05f, 0.30f);
             foreach (var item in _items)
             {
                 var s = spriteFactory.Create<ItemSprite>(item);
-                var defaultTexture = spriteFactory.CreateFilledRectangle(100, 50, Utils.RandomColor());
-                defaultTexture.Color = Color.Green;
-                var focusedTexture = spriteFactory.CreateFilledRectangle(100, 50, Color.Orange);
+                var textureSize = GetRelative(0.9f / _items.Count, 0.40f).ToPoint();
+                
+                var defaultTexture = spriteFactory.CreateFilledRectangle(textureSize, Utils.RandomColor());
+                var focusedTexture = spriteFactory.CreateFilledRectangle(textureSize, Color.Orange);
                 //s.SpriteTexture = defaultTexture;
                 s.SpriteTexture = new MultiStateSpriteTexture2D<string>(new Dictionary<string, ISpriteTexture>
                 {

@@ -6,8 +6,6 @@ namespace InfraTabula.Xna.Win
     {
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
         }
@@ -15,7 +13,6 @@ namespace InfraTabula.Xna.Win
 
         //private readonly Color _backColor = XnaLibrary.Extensions.FromColor(System.Drawing.SystemColors.Control);
         private readonly Color _backColor = Color.CornflowerBlue;
-        private readonly GraphicsDeviceManager _graphics;
 
 
         protected override void Debug(string message)
@@ -29,6 +26,10 @@ namespace InfraTabula.Xna.Win
         {
             var listScreen = new ListScreen();
             ScreenManager.AddScreen(listScreen);
+
+            GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
+            GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
+            GraphicsDeviceManager.ApplyChanges();
             
             base.Initialize();
         }
@@ -43,7 +44,7 @@ namespace InfraTabula.Xna.Win
 
         protected override void Draw(GameTime gameTime)
         {
-            _graphics.GraphicsDevice.Clear(_backColor);
+            GraphicsDevice.Clear(_backColor);
             
             base.Draw(gameTime);
         }
