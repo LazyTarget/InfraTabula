@@ -10,6 +10,7 @@ namespace InfraTabula.Xna
 {
     public class ItemScreen : GameScreen
     {
+        private int _scrollStrength = 40;
         private SimpleBrowserForm _browserForm;
         private readonly ItemSprite _itemSprite;
 
@@ -27,12 +28,18 @@ namespace InfraTabula.Xna
             //var browserForm = new TabbedBrowserForm();
             _browserForm = new SimpleBrowserForm(_itemSprite.Item.Url);
             _browserForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            _browserForm.MainMenuStrip.Hide();
             // todo: fullscreen
 
             //_browserForm.LoadUrl(_itemSprite.Item.Url);
             _browserForm.Show();
             _browserForm.FormClosed += (sender, args) => ExitScreen();
+        }
+
+        public override void UnloadContent()
+        {
+            base.UnloadContent();
+
+            _browserForm.Close();
         }
 
 
@@ -63,25 +70,50 @@ namespace InfraTabula.Xna
             }
 
 
-            var scrollStrength = 40;
             //if (args.StateComparisions.TryGetValue(Keys.Up, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
             //{
             //    var oldScrollPos = _browserForm.GetVerticalScrollPosition();
-            //    var scrollPos = Math.Max(0, oldScrollPos - scrollStrength);
+            //    var scrollPos = Math.Max(0, oldScrollPos - _scrollStrength);
             //    if (oldScrollPos != scrollPos)
             //        _browserForm.SetVerticalScrollPosition(scrollPos);
             //    args.Handled = true;
             //}
             //if (args.StateComparisions.TryGetValue(Keys.Down, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
             //{
-            //    var scrollPos = _browserForm.GetVerticalScrollPosition() + scrollStrength;
+            //    var scrollPos = _browserForm.GetVerticalScrollPosition() + _scrollStrength;
             //    _browserForm.SetVerticalScrollPosition(scrollPos);
             //    args.Handled = true;
             //}
-            
+
             base.OnKeyboardChange(args);
         }
 
 
+        public override void OnGamePadChange(GamePadChangeEventArgs args)
+        {
+            var playerIndexes = Enum.GetValues(typeof(PlayerIndex)).Cast<PlayerIndex>();
+            foreach (var playerIndex in playerIndexes)
+            {
+                var comparison = args.StateComparisions[playerIndex];
+                
+                GamePadButtonStateComparision buttonState;
+                if (comparison.ButtonComparisions.TryGetValue(Buttons.DPadUp, out buttonState) && buttonState.OldState == ButtonState.Released && buttonState.CurrentState == ButtonState.Pressed)
+                {
+                    var oldScrollPos = _browserForm.GetVerticalScrollPosition();
+                    var scrollPos = Math.Max(0, oldScrollPos - _scrollStrength);
+                    if (oldScrollPos != scrollPos)
+                        _browserForm.SetVerticalScrollPosition(scrollPos);
+                    args.Handled = true;
+                }
+                if (comparison.ButtonComparisions.TryGetValue(Buttons.DPadDown, out buttonState) && buttonState.OldState == ButtonState.Released && buttonState.CurrentState == ButtonState.Pressed)
+                {
+                    var scrollPos = _browserForm.GetVerticalScrollPosition() + _scrollStrength;
+                    _browserForm.SetVerticalScrollPosition(scrollPos);
+                    args.Handled = true;
+                }
+            }
+
+            base.OnGamePadChange(args);
+        }
     }
 }

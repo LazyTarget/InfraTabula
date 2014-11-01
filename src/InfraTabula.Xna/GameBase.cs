@@ -49,14 +49,20 @@ namespace InfraTabula.Xna
 
             Components.Add(ScreenManager);
 
+            var listScreen = new ListScreen();
+            ScreenManager.AddScreen(listScreen);
+            
+
             EventExtensions.Bind(new MouseLeftDownEvent(MouseLeftDown_Callback), this);
             EventExtensions.Bind(new MouseLeftUpEvent(MouseLeftUp_Callback), this);
+            EventExtensions.Bind(new MouseMoveEvent(MouseMove_Callback), this);
             EventExtensions.Bind(new KeyboardChangeEvent(KeyboardChange_Callback), this);
             EventExtensions.Bind(new KeyboardKeyDownEvent(KeyboardKeyDown_Enter_Callback, Keys.Enter), this);
-            EventExtensions.Bind(new MouseMoveEvent(MouseMove_Callback), this);
+            EventExtensions.Bind(new GamePadChangeEvent(GamePadChange_Callback), this);
             
             base.Initialize();
         }
+        
 
 
         protected override void LoadContent()
@@ -71,6 +77,12 @@ namespace InfraTabula.Xna
 
 
             base.LoadContent();
+
+
+            //var handle = Window.Handle;
+            //var form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(handle);
+            //var b = form.Focus();
+            //System.Diagnostics.Debug.WriteLine("Form got focus: " + b);
         }
 
 
@@ -170,6 +182,7 @@ namespace InfraTabula.Xna
                 percentage.X, percentage.Y);
         }
         
+
         private void KeyboardChange_Callback(KeyboardChangeEventArgs args)
         {
             foreach (var s in args.StateComparisions.Select(x => x.Value))
@@ -190,12 +203,30 @@ namespace InfraTabula.Xna
 
             ScreenManager._InvokeKeyboardChange(args);
         }
-
-
+        
         private void KeyboardKeyDown_Enter_Callback(KeyStateComparision state)
         {
             var keyboardState = state.GetKeyboardState();
             Debug(string.Format("KeyboardKeyDown_Enter_Callback()"));
+        }
+
+
+        private void GamePadChange_Callback(GamePadChangeEventArgs state)
+        {
+            foreach (var pair in state.StateComparisions)
+            {
+                var playerIndex = pair.Key;
+                var comparison = state.StateComparisions[playerIndex];
+                foreach (var s in comparison.ButtonComparisions.Select(x => x.Value))
+                {
+                    if (!s.Changed)
+                        continue;
+                    
+                    Debug(string.Format("GamePadChange_Callback() Player:{3}, Button:{0}, Old:{1}, New:{2}", s.Button, s.OldState, s.CurrentState, s.Player));
+                }
+            }
+            
+            ScreenManager._InvokeGamePadChange(state);
         }
 
 

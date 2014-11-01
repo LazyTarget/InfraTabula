@@ -24,10 +24,6 @@ namespace InfraTabula.Xna.Win
 
         protected override void Initialize()
         {
-            var listScreen = new ListScreen();
-            ScreenManager.AddScreen(listScreen);
-
-
             // todo: detect current resolution
             GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
             GraphicsDeviceManager.PreferredBackBufferHeight = 1080;

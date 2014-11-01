@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using XnaLibrary.Input;
 
 namespace InfraTabula.Xna
@@ -322,6 +324,29 @@ namespace InfraTabula.Xna
             
         }
 
+        internal void _InvokeGamePadChange(GamePadChangeEventArgs args)
+        {
+            OnGamePadChange(args);
+        }
+
+        public virtual void OnGamePadChange(GamePadChangeEventArgs args)
+        {
+            var playerIndexes = Enum.GetValues(typeof(PlayerIndex)).Cast<PlayerIndex>();
+            foreach (var playerIndex in playerIndexes)
+            {
+                var comparison = args.StateComparisions[playerIndex];
+                var buttonComparisons = comparison.ButtonComparisions;
+
+                GamePadButtonStateComparision buttonState;
+                if (buttonComparisons.TryGetValue(Buttons.Back, out buttonState) && buttonState.OldState == ButtonState.Released && buttonState.CurrentState == ButtonState.Pressed)
+                {
+                    ExitScreen();
+                    args.Handled = true;
+                    // todo: Handled for each button change
+                }
+            }
+        }
+
 
         /// <summary>
         /// This is called when the screen should draw itself.
@@ -364,8 +389,12 @@ namespace InfraTabula.Xna
         /// instantly kills the screen, this method respects the transition timings
         /// and will give the screen a chance to gradually transition off.
         /// </summary>
-        public void ExitScreen()
+        public virtual void ExitScreen()
         {
+            if (isExiting)
+                return;
+
+            isExiting = true;
             if (TransitionOffTime == TimeSpan.Zero)
             {
                 // If the screen has a zero transition time, remove it immediately.

@@ -133,10 +133,12 @@
     <Compile Include="Components\GameScreen.cs" />
     <Compile Include="Components\ScreenManager.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Events\EventArgs\GamePadChangeEventArgs.cs" />
     <Compile Include="Events\EventArgs\KeyboardChangeEventArgs.cs" />
     <Compile Include="Events\EventArgs\MouseDownEventArgs.cs" />
     <Compile Include="Events\EventBase.cs" />
     <Compile Include="Events\IEventBoundable.cs" />
+    <Compile Include="Events\GamePadChangeEvent.cs" />
     <Compile Include="Events\MouseChangeEvent.cs" />
     <Compile Include="Events\KeyboardChangeEvent.cs" />
     <Compile Include="Events\KeyboardKeyUpEvent.cs" />

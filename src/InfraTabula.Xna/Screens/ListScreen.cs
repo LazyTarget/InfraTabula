@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -67,6 +68,15 @@ namespace InfraTabula.Xna
         }
 
 
+        public override void ExitScreen()
+        {
+            base.ExitScreen();
+
+            if (!ScreenManager.GetScreens().Any())      // As list screen is the MainScreen, if closed then application should terminate
+                Game.Exit();
+        }
+
+
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
@@ -86,42 +96,91 @@ namespace InfraTabula.Xna
 
         public override void OnKeyboardChange(KeyboardChangeEventArgs args)
         {
-            if (_focusedItemSprite != null)
+            // todo: support holding down the button for X milliseconds
+
+            KeyStateComparision keyState;
+            if (args.StateComparisions.TryGetValue(Keys.Left, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
             {
-                var index = _items.IndexOf(_focusedItemSprite.Item);
-                var oldIndex = index;
-
-                KeyStateComparision keyState;
-                if (args.StateComparisions.TryGetValue(Keys.Left, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
-                {
-                    index--;
-                }
-                else if (args.StateComparisions.TryGetValue(Keys.Right, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
-                {
-                    index++;
-                }
-                else if (args.StateComparisions.TryGetValue(Keys.Enter, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
-                {
-                    OpenItem(_focusedItemSprite);
-                    args.Handled = true;
-                }
-
-
-                if (oldIndex != index)
-                {
-                    args.Handled = true;
-                    if (index >= 0 && index < _items.Count)
-                    {
-                        var newItem = _items.ElementAt(index);
-                        var itemSprite = Sprites.OfType<ItemSprite>().SingleOrDefault(x => x.Item == newItem);
-                        FocusedItem = itemSprite;
-                    }
-                }
+                SelectLeft();
+                args.Handled = true;
+            }
+            if (args.StateComparisions.TryGetValue(Keys.Right, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
+            {
+                SelectRight();
+                args.Handled = true;
+            }
+            if (args.StateComparisions.TryGetValue(Keys.Enter, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
+            {
+                OpenItem(_focusedItemSprite);
+                args.Handled = true;
             }
 
             base.OnKeyboardChange(args);
         }
 
+
+        public override void OnGamePadChange(GamePadChangeEventArgs args)
+        {
+            var playerIndexes = Enum.GetValues(typeof(PlayerIndex)).Cast<PlayerIndex>();
+            foreach (var playerIndex in playerIndexes)
+            {
+                var comparison = args.StateComparisions[playerIndex];
+
+                // todo: support holding down the button for X milliseconds
+
+                GamePadButtonStateComparision buttonState;
+                if (comparison.ButtonComparisions.TryGetValue(Buttons.DPadLeft, out buttonState) && buttonState.OldState == ButtonState.Released && buttonState.CurrentState == ButtonState.Pressed)
+                {
+                    SelectLeft();
+                    args.Handled = true;
+                }
+                if (comparison.ButtonComparisions.TryGetValue(Buttons.DPadRight, out buttonState) && buttonState.OldState == ButtonState.Released && buttonState.CurrentState == ButtonState.Pressed)
+                {
+                    SelectRight();
+                    args.Handled = true;
+                }
+                if (comparison.ButtonComparisions.TryGetValue(Buttons.A, out buttonState) && buttonState.OldState == ButtonState.Released && buttonState.CurrentState == ButtonState.Pressed)
+                {
+                    OpenItem(_focusedItemSprite);
+                    args.Handled = true;
+                }
+            }
+
+            base.OnGamePadChange(args);
+        }
+
+
+        private void SelectLeft()
+        {
+            var index = 0;
+            if(_focusedItemSprite != null)
+                index = _items.IndexOf(_focusedItemSprite.Item) - 1;
+            SelectIndex(index);
+        }
+
+        private void SelectRight()
+        {
+            var index = 0;
+            if (_focusedItemSprite != null)
+                index = _items.IndexOf(_focusedItemSprite.Item) + 1;
+            SelectIndex(index);
+        }
+
+        private void SelectIndex(int index)
+        {
+            var oldIndex = -1;
+            if (_focusedItemSprite != null)
+                oldIndex = _items.IndexOf(_focusedItemSprite.Item);
+            if (oldIndex != index)
+            {
+                if (index >= 0 && index < _items.Count)
+                {
+                    var newItem = _items.ElementAt(index);
+                    var itemSprite = Sprites.OfType<ItemSprite>().SingleOrDefault(x => x.Item == newItem);
+                    FocusedItem = itemSprite;
+                }
+            }
+        }
 
 
         private void OpenItem(ItemSprite itemSprite)

@@ -8,6 +8,11 @@ namespace InfraTabula.Xna
 {
     public class KeyboardChangeEventArgs : HandledEventArgs
     {
+        public KeyboardChangeEventArgs()
+        {
+            StateComparisions = new Dictionary<Keys, KeyStateComparision>();
+        }
+
         public Dictionary<Keys, KeyStateComparision> StateComparisions { get; set; }
     }
 }

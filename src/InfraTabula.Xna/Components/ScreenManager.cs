@@ -258,8 +258,9 @@ namespace InfraTabula.Xna
 
         internal void _InvokeKeyboardChange(KeyboardChangeEventArgs args)
         {
-            var screens = GetScreens().Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
-            foreach (var screen in screens)
+            var screens = GetScreens().ToList();
+            var activeScreens = screens.Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
+            foreach (var screen in activeScreens)
             {
                 if (args.Handled)
                     break;
@@ -268,6 +269,18 @@ namespace InfraTabula.Xna
             }
         }
 
+        internal void _InvokeGamePadChange(GamePadChangeEventArgs args)
+        {
+            var screens = GetScreens().ToList();
+            var activeScreens = screens.Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
+            foreach (var screen in activeScreens)
+            {
+                if (args.Handled)
+                    break;
+                screen._InvokeGamePadChange(args);
+                break;      // only focused screen should recieve input
+            }
+        }
 
 
         #region Public Methods
