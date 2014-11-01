@@ -11,6 +11,7 @@ namespace InfraTabula.Xna
     {
         private List<Item> _items;
         private ItemSprite _focusedItemSprite;
+        private ItemSprite _hoveredItemSprite;
 
         public ItemSprite FocusedItem
         {
@@ -21,7 +22,27 @@ namespace InfraTabula.Xna
                     _focusedItemSprite.SpriteTexture.TrySetTextureState("default");
 
                 _focusedItemSprite = value;
-                _focusedItemSprite.SpriteTexture.TrySetTextureState("focused");
+                if (_focusedItemSprite != null)
+                    _focusedItemSprite.SpriteTexture.TrySetTextureState("focused");
+            }
+        }
+
+        public ItemSprite HoveredItem
+        {
+            get { return _hoveredItemSprite; }
+            private set
+            {
+                if (_hoveredItemSprite != null)
+                {
+                    if(_hoveredItemSprite == _focusedItemSprite)
+                        _hoveredItemSprite.SpriteTexture.TrySetTextureState("focused");
+                    else
+                        _hoveredItemSprite.SpriteTexture.TrySetTextureState("default");
+                }
+
+                _hoveredItemSprite = value;
+                if (_hoveredItemSprite != null)
+                    _hoveredItemSprite.SpriteTexture.TrySetTextureState("hover");
             }
         }
 
@@ -46,19 +67,30 @@ namespace InfraTabula.Xna
                 
                 var defaultTexture = spriteFactory.CreateFilledRectangle(textureSize, Utils.RandomColor());
                 var focusedTexture = spriteFactory.CreateFilledRectangle(textureSize, Color.Orange);
+                var onHoverTexture = spriteFactory.CreateFilledRectangle(textureSize, Color.LightYellow);
                 //s.SpriteTexture = defaultTexture;
                 s.SpriteTexture = new MultiStateSpriteTexture2D<string>(new Dictionary<string, ISpriteTexture>
                 {
                     { "default", defaultTexture },
-                    { "focused", focusedTexture }
+                    { "focused", focusedTexture },
+                    { "hover", onHoverTexture },
                 });
 
                 s.OnClicked += (sender, args) =>
                 {
-                    if (FocusedItem == s)
+                    if (FocusedItem == s || 
+                        HoveredItem == s)
                         OpenItem(s);
                     else
                         FocusedItem = s;
+                };
+                s.OnMouseEntered += (sender, args) =>
+                {
+                    HoveredItem = s;
+                };
+                s.OnMouseLeft += (sender, args) =>
+                {
+                    HoveredItem = null;
                 };
 
                 s.Position = prevPos;
@@ -93,6 +125,24 @@ namespace InfraTabula.Xna
             base.HandleInput(input);
         }
 
+        public override void OnMouseMove(MouseMoveEventArgs args)
+        {
+            //var current = args.PositionComparision.CurrentPosition;
+            //var point = new Point(current.X, current.Y);
+            //var sprite = ScreenManager.GetSpriteAt(point);
+            //if (sprite == null)
+            //{
+            //    HoveredItem = null;
+            //    return;
+            //}
+
+            //var itemSprite = sprite as ItemSprite;
+            //if (itemSprite != null)
+            //{
+            //    HoveredItem = itemSprite;
+            //}
+            base.OnMouseMove(args);
+        }
 
         public override void OnKeyboardChange(KeyboardChangeEventArgs args)
         {
@@ -141,7 +191,10 @@ namespace InfraTabula.Xna
                 }
                 if (comparison.ButtonComparisions.TryGetValue(Buttons.A, out buttonState) && buttonState.OldState == ButtonState.Released && buttonState.CurrentState == ButtonState.Pressed)
                 {
-                    OpenItem(_focusedItemSprite);
+                    if (_hoveredItemSprite != null)
+                        OpenItem(_hoveredItemSprite);
+                    else
+                        OpenItem(_focusedItemSprite);
                     args.Handled = true;
                 }
             }
@@ -185,6 +238,9 @@ namespace InfraTabula.Xna
 
         private void OpenItem(ItemSprite itemSprite)
         {
+            if (itemSprite == null)
+                return;
+
             var itemScreen = new ItemScreen(itemSprite);
             ScreenManager.AddScreen(itemScreen);
         }

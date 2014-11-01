@@ -59,6 +59,7 @@ namespace InfraTabula.Xna
             ISpriteTexture spriteTexture;
             if (_textures.TryGetValue(State, out spriteTexture))
                 return spriteTexture;
+            System.Diagnostics.Debug.WriteLine("Could not find sprite texture for state '" + State + "'");
             if (_textures.Any())
                 return _textures.Select(x => x.Value).FirstOrDefault();
             return null;

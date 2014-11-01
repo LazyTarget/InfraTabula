@@ -7,6 +7,8 @@ namespace InfraTabula.Xna
     public class Sprite : ISprite
     {
         public event EventHandler<MouseDownEventArgs> OnClicked;
+        public event EventHandler<MouseMoveEventArgs> OnMouseEntered;
+        public event EventHandler<MouseMoveEventArgs> OnMouseLeft;
 
 
         public Sprite()
@@ -54,6 +56,8 @@ namespace InfraTabula.Xna
 
 
 
+        #region Events
+
 
         internal void _InvokeClick(MouseDownEventArgs args)
         {
@@ -67,6 +71,38 @@ namespace InfraTabula.Xna
         {
             
         }
+
+
+
+        internal void _InvokeMouseEnter(MouseMoveEventArgs args)
+        {
+            OnMouseEnter(args);
+
+            if (OnMouseEntered != null)
+                OnMouseEntered(this, args);
+        }
+
+        protected virtual void OnMouseEnter(MouseMoveEventArgs args)
+        {
+
+        }
+
+
+
+        internal void _InvokeMouseLeave(MouseMoveEventArgs args)
+        {
+            OnMouseLeave(args);
+
+            if (OnMouseLeft != null)
+                OnMouseLeft(this, args);
+        }
+
+        protected virtual void OnMouseLeave(MouseMoveEventArgs args)
+        {
+
+        }
+
+        #endregion
 
     }
 }

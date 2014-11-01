@@ -3,12 +3,12 @@ using XnaLibrary.Input;
 
 namespace InfraTabula.Xna
 {
-    public class MouseMoveEvent : EventBase<MousePositionComparision>
+    public class MouseMoveEvent : EventBase<MouseMoveEventArgs>
     {
-        public MouseMoveEvent(Action<MousePositionComparision> callback) : base(callback) { }
+        public MouseMoveEvent(Action<MouseMoveEventArgs> callback) : base(callback) { }
 
 
-        protected override bool Check(out MousePositionComparision arg)
+        protected override bool Check(out MouseMoveEventArgs arg)
         {
             arg = null;
             var inputStateManager = Game.Services.GetService(typeof(InputStateManager)) as InputStateManager;
@@ -18,7 +18,10 @@ namespace InfraTabula.Xna
             var c = mouseComparison.PositionComparision;
             if (c.Changed)
             {
-                arg = c;
+                arg = new MouseMoveEventArgs
+                {
+                    PositionComparision = c
+                };
                 return true;
             }
             return false;

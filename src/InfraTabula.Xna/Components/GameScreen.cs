@@ -314,6 +314,17 @@ namespace InfraTabula.Xna
         public virtual void HandleInput(InputState input) { }
 
 
+        internal void _InvokeMouseMove(MouseMoveEventArgs args)
+        {
+            OnMouseMove(args);
+        }
+
+        public virtual void OnMouseMove(MouseMoveEventArgs args)
+        {
+
+        }
+
+
         internal void _InvokeKeyboardChange(KeyboardChangeEventArgs args)
         {
             OnKeyboardChange(args);

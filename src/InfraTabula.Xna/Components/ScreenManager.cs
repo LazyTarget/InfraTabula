@@ -255,6 +255,18 @@ namespace InfraTabula.Xna
 
         #endregion
 
+        internal void _InvokeMouseMove(MouseMoveEventArgs args)
+        {
+            var screens = GetScreens().ToList();
+            var activeScreens = screens.Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
+            foreach (var screen in activeScreens)
+            {
+                if (args.Handled)
+                    break;
+                screen._InvokeMouseMove(args);
+                break;      // only focused screen should recieve input
+            }
+        }
 
         internal void _InvokeKeyboardChange(KeyboardChangeEventArgs args)
         {

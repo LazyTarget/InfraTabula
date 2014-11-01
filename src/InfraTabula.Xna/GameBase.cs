@@ -13,6 +13,12 @@ namespace InfraTabula.Xna
         private readonly List<IEvent> _events = new List<IEvent>();
         private Matrix _spriteScale;
 
+        private Sprite _lastHovered;
+        private Vector2 mouseVelocity;
+        private Vector2 mouseNewVelocity;
+        private const float MouseSpeed = 3;
+        private const float StickDown_MouseSpeed = 10;
+
 
         public GameBase()
         {
@@ -116,8 +122,32 @@ namespace InfraTabula.Xna
 
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            mouseVelocity = Vector2.Zero;
+            mouseNewVelocity = Vector2.Zero;
 
+            base.Update(gameTime);      // HandleInput is called here
+
+            if (mouseNewVelocity != Vector2.Zero)
+            {
+                var mouseState = Mouse.GetState();
+                var oldPos = new Vector2(mouseState.X, mouseState.Y);
+                var newPos = oldPos;
+
+
+                //mouseVelocity += mouseNewVelocity;
+                mouseVelocity = mouseNewVelocity;
+
+
+                newPos += mouseVelocity;
+                //newPos.X = MathHelper.Clamp(newPos.X, 0, GraphicsDevice.DisplayMode.Width);
+                //newPos.Y = MathHelper.Clamp(newPos.Y, 0, GraphicsDevice.DisplayMode.Height);
+                Mouse.SetPosition((int)newPos.X, (int)newPos.Y);
+                System.Diagnostics.Debug.WriteLine("New mouse pos = {0}, {1}", newPos.X, newPos.Y);
+
+                mouseVelocity = mouseNewVelocity;
+            }
+            else
+                mouseVelocity = Vector2.Zero;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -144,12 +174,45 @@ namespace InfraTabula.Xna
 
 
 
+        private void MouseMove_Callback(MouseMoveEventArgs state)
+        {
+            var current = state.PositionComparision.CurrentPosition;
+            var size = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            var percentage = new Vector2(current.X / size.X, current.Y / size.Y);
+
+            Window.Title = string.Format("Mouse  X:{0} ({4:P2}), Y:{1} ({5:P2})   -   Window Size  X: {2}, Y:{3}", 
+                current.X, current.Y,
+                size.X, size.Y,
+                percentage.X, percentage.Y);
+
+
+            var sprite = ScreenManager.GetSpriteAt(current);
+            if (sprite != null)
+            {
+                var baseSprite = sprite as Sprite;
+                if (baseSprite != null)
+                {
+                    if (_lastHovered != null)
+                        _lastHovered._InvokeMouseLeave(state);
+
+                    baseSprite._InvokeMouseEnter(state);
+                    _lastHovered = baseSprite;
+                }
+            }
+            else if (_lastHovered != null)
+            {
+                _lastHovered._InvokeMouseLeave(state);
+            }
+
+            ScreenManager._InvokeMouseMove(state);
+        }
+
         private void MouseLeftDown_Callback(MouseButtonStateComparision state)
         {
             var mouseState = state.GetMouseState();
             Debug(string.Format("MouseLeftDown_Callback() X:{0} Y:{1}", mouseState.New.X, mouseState.New.Y));
-            var point = new Point(mouseState.New.X, mouseState.New.Y);
-            var sprite = ScreenManager.GetSpriteAt(point);
+            var current = new Point(mouseState.New.X, mouseState.New.Y);
+            var sprite = ScreenManager.GetSpriteAt(current);
             if (sprite == null)
                 return;
 
@@ -170,17 +233,6 @@ namespace InfraTabula.Xna
             Debug(string.Format("MouseLeftUp_Callback() X:{0} Y:{1}", mouseState.New.X, mouseState.New.Y));
         }
 
-        private void MouseMove_Callback(MousePositionComparision state)
-        {
-            var current = state.CurrentPosition;
-            var size = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            var percentage = new Vector2(current.X / size.X, current.Y / size.Y);
-
-            Window.Title = string.Format("Mouse  X:{0} ({4:P2}), Y:{1} ({5:P2})   -   Window Size  X: {2}, Y:{3}", 
-                current.X, current.Y,
-                size.X, size.Y,
-                percentage.X, percentage.Y);
-        }
         
 
         private void KeyboardChange_Callback(KeyboardChangeEventArgs args)
@@ -221,12 +273,58 @@ namespace InfraTabula.Xna
                 {
                     if (!s.Changed)
                         continue;
-                    
                     Debug(string.Format("GamePadChange_Callback() Player:{3}, Button:{0}, Old:{1}, New:{2}", s.Button, s.OldState, s.CurrentState, s.Player));
+
+
+                    if (s.Button == Buttons.LeftStick)
+                    {
+                        AppendNewMouseVelocity(s, Vector2.Zero);
+                    }
+
                 }
             }
             
             ScreenManager._InvokeGamePadChange(state);
+        }
+
+
+
+
+
+        private void AppendNewMouseVelocity(GamePadButtonStateComparision state, Vector2 buttonVelocity)
+        {
+            var gamePad = InputState.CurrentState.GamePad[state.Player];
+            
+
+            var stickDown = false;
+            Vector2 velocity = Vector2.Zero;
+            if (state.Button == Buttons.LeftStick)
+            {
+                velocity = gamePad.ThumbSticks.Left;
+                stickDown = gamePad.IsButtonDown(state.Button);
+            }
+            //else if (state.Button == Buttons.RightStick)
+            //{
+            //    velocity = gamePad.ThumbSticks.Right;
+            //    stickDown = gamePad.IsButtonDown(state.Button);
+            //}
+            else
+                velocity = buttonVelocity;
+
+            if (stickDown)
+                velocity *= StickDown_MouseSpeed;
+            else
+                velocity *= MouseSpeed;
+
+            System.Diagnostics.Debug.WriteLine(string.Format("MoveMouse \t\t{0}", XnaLibrary.Extensions.VectorToString(velocity)));
+
+            if (velocity == Vector2.Zero)
+                mouseNewVelocity = Vector2.Zero;
+            else
+            {
+                mouseNewVelocity.X += velocity.X;
+                mouseNewVelocity.Y -= velocity.Y;
+            }
         }
 
 

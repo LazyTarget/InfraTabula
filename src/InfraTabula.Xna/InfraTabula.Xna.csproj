@@ -135,6 +135,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Events\EventArgs\GamePadChangeEventArgs.cs" />
     <Compile Include="Events\EventArgs\KeyboardChangeEventArgs.cs" />
+    <Compile Include="Events\EventArgs\MouseMoveEventArgs.cs" />
     <Compile Include="Events\EventArgs\MouseDownEventArgs.cs" />
     <Compile Include="Events\EventBase.cs" />
     <Compile Include="Events\IEventBoundable.cs" />
