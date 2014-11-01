@@ -43,5 +43,22 @@ namespace InfraTabula.Xna
             return res;
         }
 
+
+
+        public static Point Inflate(this Point point, int increment)
+        {
+            var res = new Point(point.X + increment, point.Y + increment);
+            return res;
+        }
+
+
+        public static Vector2 GetRelative(this Vector2 parent, float percentageX, float percentageY)
+        {
+            var x = parent.X * percentageX;
+            var y = parent.Y * percentageY;
+            var pnt = new Vector2(x, y);
+            return pnt;
+        }
+
     }
 }

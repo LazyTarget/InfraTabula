@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace InfraTabula.Xna
@@ -89,6 +90,51 @@ namespace InfraTabula.Xna
             
             var spriteTexture = new SpriteTexture2D(rectangleTexture);
             spriteTexture.Color = colori;
+            return spriteTexture;
+        }
+
+        public SpriteTexture2D CreateFilledRectangleWithBorder(Point size, Color fillColor, Color borderColor, Point borderSize)
+        {
+            var spriteTexture = CreateFilledRectangleWithBorder(size.X, size.Y, fillColor, borderColor, borderSize);
+            return spriteTexture;
+        }
+
+        public SpriteTexture2D CreateFilledRectangleWithBorder(int width, int height, Color fillColor, Color borderColor, Point borderSize)
+        {
+            var spriteTexture = CreateFilledRectangle(width, height, fillColor);
+            Texture2D rectangleTexture = spriteTexture.Texture;
+
+
+            var colorData = new Color[width * height];                 //set the color to the amount of pixels in the textures
+            rectangleTexture.GetData(colorData);
+            for (int i = 0; i < colorData.Length; i++)
+            {
+                var row = (int) Math.Floor(i/(double) width);
+                var col = i % width;
+
+                //var pixelColor = fillColor;
+                if (row < borderSize.Y || 
+                    row > (height - borderSize.Y))
+                {
+                    //pixelColor = borderColor;
+                    colorData[i] = borderColor;
+                }
+                else if (col < borderSize.X ||
+                         col > (width - borderSize.X))
+                {
+                    //pixelColor = borderColor;
+                    colorData[i] = borderColor;
+                }
+                else
+                {
+                    //pixelColor = Color.Transparent;
+                }
+                //colorData[i] = pixelColor;                                                      //loop through all the colors setting them to whatever values we want
+            }
+            rectangleTexture.SetData(colorData);                                                //set the color data on the texture
+
+            //var spriteTexture = new SpriteTexture2D(rectangleTexture);
+            //spriteTexture.Color = fillColor;
             return spriteTexture;
         }
 

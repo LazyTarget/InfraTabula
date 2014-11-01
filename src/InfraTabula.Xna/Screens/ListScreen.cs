@@ -42,7 +42,12 @@ namespace InfraTabula.Xna
 
                 _hoveredItemSprite = value;
                 if (_hoveredItemSprite != null)
-                    _hoveredItemSprite.SpriteTexture.TrySetTextureState("hover");
+                {
+                    if (_hoveredItemSprite == _focusedItemSprite)
+                        _hoveredItemSprite.SpriteTexture.TrySetTextureState("focused-hover");
+                    else
+                        _hoveredItemSprite.SpriteTexture.TrySetTextureState("hover");
+                }
             }
         }
 
@@ -63,17 +68,22 @@ namespace InfraTabula.Xna
             foreach (var item in _items)
             {
                 var s = spriteFactory.Create<ItemSprite>(item);
-                var textureSize = GetRelative(0.9f / _items.Count, 0.40f).ToPoint();
-                
-                var defaultTexture = spriteFactory.CreateFilledRectangle(textureSize, Utils.RandomColor());
-                var focusedTexture = spriteFactory.CreateFilledRectangle(textureSize, Color.Orange);
-                var onHoverTexture = spriteFactory.CreateFilledRectangle(textureSize, Color.LightYellow);
+                var textureSize = GetRelative(0.9f / _items.Count, 0.40f);
+                //var borderSize = textureSize.GetRelative(0.1f / _items.Count, 0.1f).ToPoint();
+                var borderSize = new Point(5, 5);
+
+                var defaultTexture = spriteFactory.CreateFilledRectangle(textureSize.ToPoint(), Utils.RandomColor());
+                var focusedTexture = spriteFactory.CreateFilledRectangleWithBorder(textureSize.ToPoint(), Color.Orange, defaultTexture.Color, borderSize.Inflate(2));
+                //var onHoverTexture = spriteFactory.CreateFilledRectangle(textureSize, Color.LightYellow);
+                var onHoverTexture = spriteFactory.CreateFilledRectangleWithBorder(textureSize.ToPoint(), Color.LightYellow, defaultTexture.Color, borderSize);
+                var onFocusedHoverTexture = spriteFactory.CreateFilledRectangleWithBorder(textureSize.ToPoint(), Color.LightYellow, Color.Orange, borderSize);
                 //s.SpriteTexture = defaultTexture;
                 s.SpriteTexture = new MultiStateSpriteTexture2D<string>(new Dictionary<string, ISpriteTexture>
                 {
                     { "default", defaultTexture },
                     { "focused", focusedTexture },
                     { "hover", onHoverTexture },
+                    { "focused-hover", onFocusedHoverTexture },
                 });
 
                 s.OnClicked += (sender, args) =>
