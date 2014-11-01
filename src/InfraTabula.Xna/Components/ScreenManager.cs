@@ -240,14 +240,7 @@ namespace InfraTabula.Xna
             var matrixScale = Matrix.CreateScale(_scale.X, _scale.Y, 1);
 
             //SpriteBatch.Begin();
-            //if (DateTime.Now.Second > 30)
-            //{
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, matrixScale);
-            //}
-            //else
-            //{
-            //    SpriteBatch.Begin();
-            //}
 
             foreach (GameScreen screen in screens)
             {
@@ -256,7 +249,6 @@ namespace InfraTabula.Xna
 
                 screen.Draw(gameTime);
             }
-
             SpriteBatch.End();
         }
 
@@ -272,6 +264,7 @@ namespace InfraTabula.Xna
                 if (args.Handled)
                     break;
                 screen._InvokeKeyboardChange(args);
+                break;      // only focused screen should recieve input
             }
         }
 
@@ -288,13 +281,13 @@ namespace InfraTabula.Xna
             screen.ScreenManager = this;
             screen.IsExiting = false;
 
+            screens.Add(screen);
+            
             // If we have a graphics device, tell the screen to load content.
             if (isInitialized)
             {
                 screen.LoadContent();
             }
-
-            screens.Add(screen);
 
             // update the TouchPanel to respond to gestures this screen is interested in
             //TouchPanel.EnabledGestures = screen.EnabledGestures;

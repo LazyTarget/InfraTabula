@@ -54,7 +54,10 @@ namespace InfraTabula.Xna
 
                 s.OnClicked += (sender, args) =>
                 {
-                    FocusedItem = s;
+                    if (FocusedItem == s)
+                        OpenItem(s);
+                    else
+                        FocusedItem = s;
                 };
 
                 s.Position = prevPos;
@@ -99,20 +102,33 @@ namespace InfraTabula.Xna
                 }
                 else if (args.StateComparisions.TryGetValue(Keys.Enter, out keyState) && keyState.OldState == KeyState.Up && keyState.CurrentState == KeyState.Down)
                 {
-                    Game.Debug("[Enter] " + _focusedItemSprite.Item);
+                    OpenItem(_focusedItemSprite);
+                    args.Handled = true;
                 }
 
 
                 if (oldIndex != index)
+                {
+                    args.Handled = true;
                     if (index >= 0 && index < _items.Count)
                     {
                         var newItem = _items.ElementAt(index);
                         var itemSprite = Sprites.OfType<ItemSprite>().SingleOrDefault(x => x.Item == newItem);
                         FocusedItem = itemSprite;
                     }
+                }
             }
 
             base.OnKeyboardChange(args);
         }
+
+
+
+        private void OpenItem(ItemSprite itemSprite)
+        {
+            var itemScreen = new ItemScreen(itemSprite);
+            ScreenManager.AddScreen(itemScreen);
+        }
+
     }
 }
