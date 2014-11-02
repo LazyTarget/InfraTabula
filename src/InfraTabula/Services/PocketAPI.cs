@@ -58,10 +58,19 @@ namespace InfraTabula
                 ID = item.ItemID.ToString(),
                 Title = item.ResolvedTitle,
                 Url = item.ResolvedUrl,
+                Tags = item.Tags,
             };
             return res;
         }
 
+
+        private ActionResult Modify(PocketAction action)
+        {
+            var actions = new List<PocketAction> { action };
+            var results = _api.Modify(actions).ToList();
+            var res = results.Single();
+            return res;
+        }
 
 
 
@@ -74,5 +83,33 @@ namespace InfraTabula
             var res = enumerable.Select(Convert);
             return res;
         }
+
+
+        public override object AddTags(object id, string tags)
+        {
+            var action = new TagsAddPocketAction
+            {
+                ItemID = System.Convert.ToInt32(id),
+                Tags = tags,
+            };
+            var actionResult = Modify(action);
+            var result = actionResult.Result;
+            return result;
+        }
+
+
+        public override object RemoveTags(object id, string tags)
+        {
+            var action = new TagsRemovePocketAction
+            {
+                ItemID = System.Convert.ToInt32(id),
+                Tags = tags,
+            };
+            var actionResult = Modify(action);
+            var result = actionResult.Result;
+            return result;
+        }
+
+
     }
 }

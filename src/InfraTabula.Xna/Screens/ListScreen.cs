@@ -62,6 +62,19 @@ namespace InfraTabula.Xna
             _items = items.Take(8).ToList();
 
 
+            var first = _items.First();
+
+            var res = Game.Api.RemoveTags(first.ID, "temp");
+
+            var it2 = Game.Api.GetItems().ToList();
+
+            foreach (var item in it2)
+            {
+                var tags = item.Tags.ToList();
+                var tStr = string.Join(",", tags);
+            }
+            
+
             Sprites.Clear();
             var spriteFactory = new SpriteFactory(ScreenManager.Game);
             var prevPos = GetRelative(0.05f, 0.30f);
