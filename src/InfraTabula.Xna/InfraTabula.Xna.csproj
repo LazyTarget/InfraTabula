@@ -134,6 +134,7 @@
     <Compile Include="Browser\TempFileDialogHandler.cs" />
     <Compile Include="Components\GameScreen.cs" />
     <Compile Include="Components\ScreenManager.cs" />
+    <Compile Include="Diagnostics\LogExtensions.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Events\EventArgs\GamePadChangeEventArgs.cs" />
     <Compile Include="Events\EventArgs\KeyboardChangeEventArgs.cs" />
@@ -229,7 +230,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Diagnostics\" />
     <Folder Include="Input\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

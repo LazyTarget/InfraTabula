@@ -142,7 +142,7 @@ namespace InfraTabula.Xna
                 //newPos.X = MathHelper.Clamp(newPos.X, 0, GraphicsDevice.DisplayMode.Width);
                 //newPos.Y = MathHelper.Clamp(newPos.Y, 0, GraphicsDevice.DisplayMode.Height);
                 Mouse.SetPosition((int)newPos.X, (int)newPos.Y);
-                System.Diagnostics.Debug.WriteLine("New mouse pos = {0}, {1}", newPos.X, newPos.Y);
+                this.Log().Info("New mouse pos = {0}, {1}", newPos.X, newPos.Y);
 
                 mouseVelocity = mouseNewVelocity;
             }
@@ -169,7 +169,8 @@ namespace InfraTabula.Xna
         protected internal virtual void Debug(string message)
         {
             message = string.Format("GameBase.{0}", message);
-            System.Diagnostics.Debug.WriteLine(message);
+            //System.Diagnostics.Debug.WriteLine(message);
+            this.Log().Info(message);
         }
 
 
@@ -316,7 +317,7 @@ namespace InfraTabula.Xna
             else
                 velocity *= MouseSpeed;
 
-            System.Diagnostics.Debug.WriteLine(string.Format("MoveMouse \t\t{0}", XnaLibrary.Extensions.VectorToString(velocity)));
+            Debug(string.Format("MoveMouse \t\t{0}", XnaLibrary.Extensions.VectorToString(velocity)));
 
             if (velocity == Vector2.Zero)
                 mouseNewVelocity = Vector2.Zero;
