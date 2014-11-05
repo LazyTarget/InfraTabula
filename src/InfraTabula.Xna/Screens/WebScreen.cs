@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using InfraTabula.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using XnaLibrary;
 using XnaLibrary.Input;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace InfraTabula.Xna
 {
-    public class ItemScreen : GameScreen
+    public class WebScreen : GameScreen
     {
         private int _scrollStrength = 40;
         private SimpleBrowserForm _browserForm;
         private readonly ItemSprite _itemSprite;
 
-        public ItemScreen(ItemSprite itemSprite)
+        public WebScreen(ItemSprite itemSprite)
         {
             _itemSprite = itemSprite;
             IsPopup = true;
@@ -110,6 +112,26 @@ namespace InfraTabula.Xna
                     var scrollPos = _browserForm.GetVerticalScrollPosition() + _scrollStrength;
                     _browserForm.SetVerticalScrollPosition(scrollPos);
                     args.Handled = true;
+                }
+
+                if (comparison.ButtonComparisions.TryGetValue(Buttons.A, out buttonState) && buttonState.Changed)
+                {
+                    if (buttonState.CurrentState == ButtonState.Pressed && buttonState.OldState == ButtonState.Released)
+                    {
+                        Game.InvokeMouseDown(MouseButtons.Left);
+                        args.Handled = true;
+                    }
+                    else if (buttonState.CurrentState == ButtonState.Released &&
+                             buttonState.OldState == ButtonState.Pressed)
+                    {
+                        if (Game.InputState.OldState.Mouse.LeftButton == ButtonState.Pressed ||
+                            Game.InputState.CurrentState.Mouse.LeftButton == ButtonState.Pressed)
+                        {
+                            Game.InvokeMouseUp(MouseButtons.Left);
+                            args.Handled = true;
+                        }
+
+                    }
                 }
             }
 

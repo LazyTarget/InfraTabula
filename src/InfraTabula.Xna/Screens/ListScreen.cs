@@ -99,29 +99,16 @@ namespace InfraTabula.Xna
                     { "focused-hover", onFocusedHoverTexture },
                 });
 
-                s.OnClicked += (sender, args) =>
-                {
-                    if (FocusedItem == s || 
-                        HoveredItem == s)
-                        OpenItem(s);
-                    else
-                        FocusedItem = s;
-                };
-                s.OnMouseEntered += (sender, args) =>
-                {
-                    HoveredItem = s;
-                };
-                s.OnMouseLeft += (sender, args) =>
-                {
-                    HoveredItem = null;
-                };
+                s.OnClicked += Item_OnClick;
+                s.OnMouseEntered += Item_OnMouseEntered;
+                s.OnMouseLeft += Item_OnMouseLeft;
 
                 s.Position = prevPos;
                 prevPos = new Vector2(prevPos.X + s.Bounds.Width, prevPos.Y);
                 Sprites.Add(s);
             }
         }
-
+        
 
         public override void ExitScreen()
         {
@@ -226,6 +213,29 @@ namespace InfraTabula.Xna
         }
 
 
+
+        private void Item_OnClick(object sender, MouseDownEventArgs mouseDownEventArgs)
+        {
+            var s = (ItemSprite)sender;
+            if (FocusedItem == s ||
+                HoveredItem == s)
+                OpenItem(s);
+            else
+                FocusedItem = s;
+        }
+
+        private void Item_OnMouseEntered(object sender, MouseMoveEventArgs mouseMoveEventArgs)
+        {
+            HoveredItem = (ItemSprite)sender;
+        }
+
+        private void Item_OnMouseLeft(object sender, MouseMoveEventArgs mouseMoveEventArgs)
+        {
+            HoveredItem = null;
+        }
+        
+
+
         private void SelectLeft()
         {
             var index = 0;
@@ -264,7 +274,7 @@ namespace InfraTabula.Xna
             if (itemSprite == null)
                 return;
 
-            var itemScreen = new ItemScreen(itemSprite);
+            var itemScreen = new WebScreen(itemSprite);
             ScreenManager.AddScreen(itemScreen);
         }
 

@@ -180,10 +180,11 @@
     <Compile Include="Graphics\MultiStateSpriteTexture2D.cs" />
     <Compile Include="Graphics\SpriteTexture2D.cs" />
     <Compile Include="Helpers\ControlExtensions.cs" />
+    <Compile Include="Helpers\MouseInvoker.cs" />
     <Compile Include="Helpers\SpriteExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Graphics\Sprites\Sprite.cs" />
-    <Compile Include="Screens\ItemScreen.cs" />
+    <Compile Include="Screens\WebScreen.cs" />
     <Compile Include="Screens\ListScreen.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Browser\Browser.resx">
