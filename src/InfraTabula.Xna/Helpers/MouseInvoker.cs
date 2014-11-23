@@ -11,7 +11,7 @@ namespace InfraTabula.Xna
         public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
 
 
-        private static Point GetMousePos(GameBase game)
+        public static Point GetMousePos(this GameBase game)
         {
             var inputState = game.InputState;
             var mouseState = inputState.CurrentState.Mouse;

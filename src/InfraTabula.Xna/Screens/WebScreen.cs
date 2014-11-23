@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using InfraTabula.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using XnaLibrary;
@@ -27,10 +25,14 @@ namespace InfraTabula.Xna
         {
             base.LoadContent();
 
-            //var browserForm = new TabbedBrowserForm();
+            //_browserForm = new TabbedBrowserForm(_itemSprite.Item.Url);
             _browserForm = new SimpleBrowserForm(_itemSprite.Item.Url);
             _browserForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+
             // todo: fullscreen
+            // todo: multi tab? open clicks inside tabs?
+            // todo: add to "InfraTabula" button if user has navigated
+            // todo: mark as read button (shortcut for controller)
 
             //_browserForm.LoadUrl(_itemSprite.Item.Url);
             _browserForm.Show();
@@ -91,6 +93,7 @@ namespace InfraTabula.Xna
         }
 
 
+
         public override void OnGamePadChange(GamePadChangeEventArgs args)
         {
             var playerIndexes = Enum.GetValues(typeof(PlayerIndex)).Cast<PlayerIndex>();
@@ -112,10 +115,17 @@ namespace InfraTabula.Xna
                     var scrollPos = _browserForm.GetVerticalScrollPosition() + _scrollStrength;
                     _browserForm.SetVerticalScrollPosition(scrollPos);
                     args.Handled = true;
+                    this.Log().Info("DPadDown Time unchanged: {0}", buttonState.TimeUnchanged);
                 }
+
 
                 if (comparison.ButtonComparisions.TryGetValue(Buttons.A, out buttonState) && buttonState.Changed)
                 {
+                    var cursorPos = new Vector2(
+                        Game.InputState.CurrentState.Mouse.X,
+                        Game.InputState.CurrentState.Mouse.Y);
+                    // browser form offset
+
                     if (buttonState.CurrentState == ButtonState.Pressed && buttonState.OldState == ButtonState.Released)
                     {
                         Game.InvokeMouseDown(MouseButtons.Left);
@@ -128,6 +138,7 @@ namespace InfraTabula.Xna
                             Game.InputState.CurrentState.Mouse.LeftButton == ButtonState.Pressed)
                         {
                             Game.InvokeMouseUp(MouseButtons.Left);
+                            //_browserForm.InvokeClick(cursorPos);
                             args.Handled = true;
                         }
 

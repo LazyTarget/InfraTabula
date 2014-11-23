@@ -17,11 +17,12 @@ namespace InfraTabula.Xna
         private Vector2 mouseVelocity;
         private Vector2 mouseNewVelocity;
         private const float MouseSpeed = 3;
-        private const float StickDown_MouseSpeed = 10;
+        private const float StickDown_MouseSpeed = 15;
 
 
         public GameBase()
         {
+            Content.RootDirectory = "Content";
             ScreenManager = new ScreenManager(this);
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
             Window.ClientSizeChanged += Window_OnClientSizeChanged;
@@ -57,6 +58,9 @@ namespace InfraTabula.Xna
 
             var listScreen = new ListScreen();
             ScreenManager.AddScreen(listScreen);
+
+            var gamePadKeyboardScreen = new GamePadKeyboardScreen();
+            ScreenManager.AddScreen(gamePadKeyboardScreen);
             
 
             EventExtensions.Bind(new MouseLeftDownEvent(MouseLeftDown_Callback), this);
@@ -96,8 +100,13 @@ namespace InfraTabula.Xna
         {
             base.UnloadContent();
 
-            foreach (var evt in _events)
+            while (_events.Any())
+            {
+                var evt = _events.First();
                 evt.Unbind();
+                _events.Remove(evt);
+            }
+            ScreenManager.Exit();
         }
 
 
@@ -126,6 +135,12 @@ namespace InfraTabula.Xna
             mouseNewVelocity = Vector2.Zero;
 
             base.Update(gameTime);      // HandleInput is called here
+
+
+            if (InputState.CurrentState.GamePad.All(x => x.Value.ThumbSticks.Left == Vector2.Zero))
+            {
+                mouseNewVelocity = Vector2.Zero;
+            }
 
             if (mouseNewVelocity != Vector2.Zero)
             {
@@ -177,6 +192,8 @@ namespace InfraTabula.Xna
 
         private void MouseMove_Callback(MouseMoveEventArgs state)
         {
+            //if (!IsActive)
+            //    return;
             var current = state.PositionComparision.CurrentPosition;
             var size = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             var percentage = new Vector2(current.X / size.X, current.Y / size.Y);
@@ -210,6 +227,8 @@ namespace InfraTabula.Xna
 
         private void MouseLeftDown_Callback(MouseButtonStateComparision state)
         {
+            if (!IsActive)
+                return;
             var mouseState = state.GetMouseState();
             Debug(string.Format("MouseLeftDown_Callback() X:{0} Y:{1}", mouseState.New.X, mouseState.New.Y));
             var current = new Point(mouseState.New.X, mouseState.New.Y);
@@ -230,6 +249,8 @@ namespace InfraTabula.Xna
 
         private void MouseLeftUp_Callback(MouseButtonStateComparision state)
         {
+            if (!IsActive)
+                return;
             var mouseState = state.GetMouseState();
             Debug(string.Format("MouseLeftUp_Callback() X:{0} Y:{1}", mouseState.New.X, mouseState.New.Y));
         }
@@ -238,6 +259,8 @@ namespace InfraTabula.Xna
 
         private void KeyboardChange_Callback(KeyboardChangeEventArgs args)
         {
+            if (!IsActive)
+                return;
             foreach (var s in args.StateComparisions.Select(x => x.Value))
             {
                 if(s.Key == Keys.F11 && s.OldState == KeyState.Up && s.CurrentState == KeyState.Down)
@@ -259,17 +282,21 @@ namespace InfraTabula.Xna
         
         private void KeyboardKeyDown_Enter_Callback(KeyStateComparision state)
         {
+            if (!IsActive)
+                return;
             var keyboardState = state.GetKeyboardState();
             Debug(string.Format("KeyboardKeyDown_Enter_Callback()"));
         }
 
 
-        private void GamePadChange_Callback(GamePadChangeEventArgs state)
+        private void GamePadChange_Callback(GamePadChangeEventArgs args)
         {
-            foreach (var pair in state.StateComparisions)
+            if (!IsActive)
+                return;
+            foreach (var pair in args.StateComparisions)
             {
                 var playerIndex = pair.Key;
-                var comparison = state.StateComparisions[playerIndex];
+                var comparison = args.StateComparisions[playerIndex];
                 foreach (var s in comparison.ButtonComparisions.Select(x => x.Value))
                 {
                     if (!s.Changed)
@@ -282,10 +309,28 @@ namespace InfraTabula.Xna
                         AppendNewMouseVelocity(s, Vector2.Zero);
                     }
 
+                    if (s.Button == Buttons.A && s.Changed)
+                    {
+                        if (s.CurrentState == ButtonState.Pressed && s.OldState == ButtonState.Released)
+                        {
+                            this.InvokeMouseDown(MouseButtons.Left);
+                        }
+                        else if (s.CurrentState == ButtonState.Released &&
+                                 s.OldState == ButtonState.Pressed)
+                        {
+                            if (InputState.OldState.Mouse.LeftButton == ButtonState.Pressed ||
+                                InputState.CurrentState.Mouse.LeftButton == ButtonState.Pressed)
+                            {
+                                this.InvokeMouseUp(MouseButtons.Left);
+                            }
+
+                        }
+                    }
+
                 }
             }
             
-            ScreenManager._InvokeGamePadChange(state);
+            ScreenManager._InvokeGamePadChange(args);
         }
 
 
@@ -304,10 +349,10 @@ namespace InfraTabula.Xna
                 velocity = gamePad.ThumbSticks.Left;
                 stickDown = gamePad.IsButtonDown(state.Button);
             }
-            //else if (state.Button == Buttons.RightStick)
+            //else if (args.Button == Buttons.RightStick)
             //{
             //    velocity = gamePad.ThumbSticks.Right;
-            //    stickDown = gamePad.IsButtonDown(state.Button);
+            //    stickDown = gamePad.IsButtonDown(args.Button);
             //}
             else
                 velocity = buttonVelocity;

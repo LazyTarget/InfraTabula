@@ -34,13 +34,7 @@ namespace InfraTabula.Xna
         /// popup, in which case screens underneath it do not need to bother
         /// transitioning off.
         /// </summary>
-        public bool IsPopup
-        {
-            get { return isPopup; }
-            protected set { isPopup = value; }
-        }
-
-        bool isPopup = false;
+        public virtual bool IsPopup { get; protected set; }
 
 
         /// <summary>
@@ -114,13 +108,7 @@ namespace InfraTabula.Xna
         /// if set, the screen will automatically remove itself as soon as the
         /// transition finishes.
         /// </summary>
-        public bool IsExiting
-        {
-            get { return isExiting; }
-            protected internal set { isExiting = value; }
-        }
-
-        bool isExiting = false;
+        public bool IsExiting { get; protected internal set; }
 
 
         /// <summary>
@@ -227,7 +215,7 @@ namespace InfraTabula.Xna
         {
             this.otherScreenHasFocus = otherScreenHasFocus;
 
-            if (isExiting)
+            if (IsExiting)
             {
                 // If the screen is going away to die, it should transition off.
                 screenState = ScreenState.TransitionOff;
@@ -397,10 +385,10 @@ namespace InfraTabula.Xna
         /// </summary>
         public virtual void ExitScreen()
         {
-            if (isExiting)
+            if (IsExiting)
                 return;
 
-            isExiting = true;
+            IsExiting = true;
             if (TransitionOffTime == TimeSpan.Zero)
             {
                 // If the screen has a zero transition time, remove it immediately.
@@ -409,7 +397,7 @@ namespace InfraTabula.Xna
             else
             {
                 // Otherwise flag that it should transition off and then exit.
-                isExiting = true;
+                IsExiting = true;
             }
         }
 

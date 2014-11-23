@@ -14,6 +14,8 @@ namespace InfraTabula.Xna
 
         public static void Init()
         {
+            Stop();
+
             var settings = new CefSettings();
             settings.RemoteDebuggingPort = 8088;
             settings.LogSeverity = LogSeverity.Verbose;
@@ -44,5 +46,12 @@ namespace InfraTabula.Xna
 
             Cef.RegisterJsObject("bound", new BoundObject());
         }
+
+
+        public static void Stop()
+        {
+            Cef.Shutdown();
+        }
+
     }
 }

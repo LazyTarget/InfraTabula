@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using XnaLibrary.Input;
 
@@ -77,10 +78,12 @@ namespace InfraTabula.Xna
 
             Sprites.Clear();
             var spriteFactory = new SpriteFactory(ScreenManager.Game);
+            var itemFont = Game.Content.Load<SpriteFont>("GameFont");
             var prevPos = GetRelative(0.05f, 0.30f);
             foreach (var item in _items)
             {
-                var s = spriteFactory.Create<ItemSprite>(item);
+                var textSprite = new TextSpriteTexture2D(itemFont);
+                var s = spriteFactory.Create<ItemSprite>(item, textSprite);
                 var textureSize = GetRelative(0.9f / _items.Count, 0.40f);
                 //var borderSize = textureSize.GetRelative(0.1f / _items.Count, 0.1f).ToPoint();
                 var borderSize = new Point(5, 5);
@@ -98,6 +101,14 @@ namespace InfraTabula.Xna
                     { "hover", onHoverTexture },
                     { "focused-hover", onFocusedHoverTexture },
                 });
+                //s.SpriteTexture = new MultiStateSpriteTexture2D<string>(new Dictionary<string, ISpriteTexture>
+                //{
+                //    { "default", new TextSpriteTexture2D(itemFont) { Text = item.Title } },
+                //    { "focused", new TextSpriteTexture2D(itemFont) { Text = item.Title } },
+                //    { "hover", new TextSpriteTexture2D(itemFont) { Text = item.Title } },
+                //    { "focused-hover", new TextSpriteTexture2D(itemFont) { Text = item.Title } },
+                //});
+                
 
                 s.OnClicked += Item_OnClick;
                 s.OnMouseEntered += Item_OnMouseEntered;
@@ -114,8 +125,9 @@ namespace InfraTabula.Xna
         {
             base.ExitScreen();
 
-            if (!ScreenManager.GetScreens().Any())      // As list screen is the MainScreen, if closed then application should terminate
-                Game.Exit();
+            //if (!ScreenManager.GetScreens().Any())      // As list screen is the MainScreen, if closed then application should terminate
+                //Game.Exit();
+            ScreenManager.Exit();
         }
 
 

@@ -73,6 +73,30 @@ namespace InfraTabula.Xna
             return r;
         }
 
+        public T Create<T>(SpriteTexture2D spriteTexture)
+            where T : ISprite, new()
+        {
+            var r = Create<T>();
+            var sprite = r as Sprite;
+            if (sprite != null)
+            {
+                sprite.SpriteTexture = spriteTexture;
+            }
+            return r;
+        }
+
+        public T Create<T>(SpriteTexture2D spriteTexture, params object[] args)
+            where T : ISprite, new()
+        {
+            var r = Create<T>(args);
+            var sprite = r as Sprite;
+            if (sprite != null)
+            {
+                sprite.SpriteTexture = spriteTexture;
+            }
+            return r;
+        }
+
 
         public SpriteTexture2D CreateFilledRectangle(Point size, Color colori)
         {
@@ -82,11 +106,11 @@ namespace InfraTabula.Xna
 
         public SpriteTexture2D CreateFilledRectangle(int width, int height, Color colori)
         {
-            Texture2D rectangleTexture = new Texture2D(_graphicsDevice, width, height);     // create the rectangle texture, ,but it will have no color! lets fix that
-            Color[] color = new Color[width * height];                                      //set the color to the amount of pixels in the textures
-            for (int i = 0; i < color.Length; i++)                                          //loop through all the colors setting them to whatever values we want
+            var rectangleTexture = new Texture2D(_graphicsDevice, width, height);       // create the rectangle texture, ,but it will have no color! lets fix that
+            var color = new Color[width * height];                                      //set the color to the amount of pixels in the textures
+            for (int i = 0; i < color.Length; i++)                                      //loop through all the colors setting them to whatever values we want
                 color[i] = colori;
-            rectangleTexture.SetData(color);                                                //set the color data on the texture
+            rectangleTexture.SetData(color);                                            //set the color data on the texture
             
             var spriteTexture = new SpriteTexture2D(rectangleTexture);
             spriteTexture.Color = colori;
@@ -137,6 +161,41 @@ namespace InfraTabula.Xna
             //spriteTexture.Color = fillColor;
             return spriteTexture;
         }
+
+
+
+        public SpriteTexture2D CreateFilledCircle(int radius, Color fillColor)
+        {
+            var texture = new Texture2D(_graphicsDevice, radius, radius);
+            var colorData = new Color[radius * radius];
+
+            float diam = radius / 2;
+            float diamsq = diam * diam;
+
+            for (int x = 0; x < radius; x++)
+            {
+                for (int y = 0; y < radius; y++)
+                {
+                    int index = x * radius + y;
+                    Vector2 pos = new Vector2(x - diam, y - diam);
+                    if (pos.LengthSquared() <= diamsq)
+                    {
+                        colorData[index] = fillColor;
+                    }
+                    else
+                    {
+                        colorData[index] = Color.Transparent;
+                    }
+                }
+            }
+            texture.SetData(colorData);
+
+
+            var spriteTexture = new SpriteTexture2D(texture);
+            spriteTexture.Color = fillColor;
+            return spriteTexture;
+        }
+
 
     }
 }

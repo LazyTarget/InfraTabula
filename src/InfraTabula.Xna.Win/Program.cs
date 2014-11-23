@@ -24,6 +24,8 @@ namespace InfraTabula.Xna.Win
             GameInstance.Services.AddService(typeof (API), API);
 
             GameInstance.Run();
+
+            CefConfig.Stop();
         }
 
 

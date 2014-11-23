@@ -212,7 +212,7 @@ namespace InfraTabula.Xna
         /// <summary>
         /// Prints a list of all the screens, for debugging.
         /// </summary>
-        void TraceScreens()
+        private void TraceScreens()
         {
             List<string> screenNames = new List<string>();
 
@@ -258,39 +258,51 @@ namespace InfraTabula.Xna
         internal void _InvokeMouseMove(MouseMoveEventArgs args)
         {
             var screens = GetScreens().ToList();
-            var activeScreens = screens.Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
-            foreach (var screen in activeScreens)
+            screens = screens.Where(x => x.ScreenState == ScreenState.Active).ToList();
+            //if (!inherit)
+            //    screens = screens.Where(x => x.IsActive).ToList();
+
+            screens.Reverse();
+            foreach (var screen in screens)
             {
                 if (args.Handled)
                     break;
                 screen._InvokeMouseMove(args);
-                break;      // only focused screen should recieve input
+                //break;      // only focused screen should recieve input
             }
         }
 
         internal void _InvokeKeyboardChange(KeyboardChangeEventArgs args)
         {
             var screens = GetScreens().ToList();
-            var activeScreens = screens.Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
-            foreach (var screen in activeScreens)
+            screens = screens.Where(x => x.ScreenState == ScreenState.Active).ToList();
+            //if (!inherit)
+            //    screens = screens.Where(x => x.IsActive).ToList();
+
+            screens.Reverse();
+            foreach (var screen in screens)
             {
                 if (args.Handled)
                     break;
                 screen._InvokeKeyboardChange(args);
-                break;      // only focused screen should recieve input
+                //break;      // only focused screen should recieve input
             }
         }
 
         internal void _InvokeGamePadChange(GamePadChangeEventArgs args)
         {
             var screens = GetScreens().ToList();
-            var activeScreens = screens.Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
-            foreach (var screen in activeScreens)
+            screens = screens.Where(x => x.ScreenState == ScreenState.Active).ToList();
+            //if (!inherit)
+            //    screens = screens.Where(x => x.IsActive).ToList();
+
+            screens.Reverse();
+            foreach (var screen in screens)
             {
                 if (args.Handled)
                     break;
                 screen._InvokeGamePadChange(args);
-                break;      // only focused screen should recieve input
+                //break;      // only focused screen should recieve input
             }
         }
 
@@ -344,6 +356,13 @@ namespace InfraTabula.Xna
             }
         }
 
+        public void Exit()
+        {
+            while (screens.Any())
+                RemoveScreen(screens[0]);
+            Game.Exit();
+        }
+
 
         /// <summary>
         /// Expose an array holding all the screens. We return a copy rather
@@ -375,10 +394,19 @@ namespace InfraTabula.Xna
 
 
 
-        public ISprite GetSpriteAt(Point point)
+        public ISprite GetSpriteAt(Point point, bool inherit = true)
         {
             var matchingSprites = new List<ISprite>();
-            var screens = GetScreens().Where(x => x.IsActive && x.ScreenState == ScreenState.Active).ToList();
+            var screens = GetScreens().ToList();
+            screens = screens.Where(x => x.ScreenState == ScreenState.Active).ToList();
+            if (!inherit)
+                screens = screens.Where(x => x.IsActive).ToList();
+
+            screens.Reverse();
+            var activeScreen = screens.FirstOrDefault(x => x.IsActive);
+            if (activeScreen is WebScreen)
+                return null;        // todo: improve
+
             foreach (var screen in screens)
             {
                 foreach (var s in screen.Sprites)

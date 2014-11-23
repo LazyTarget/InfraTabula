@@ -29,6 +29,12 @@ namespace InfraTabula.Xna
 
 
 
+        public static Vector2 Copy(this Vector2 original)
+        {
+            var res = new Vector2(original.X, original.Y);
+            return res;
+        }
+
         public static Vector2 ToVector2(this Point point)
         {
             var res = new Vector2(point.X, point.Y);

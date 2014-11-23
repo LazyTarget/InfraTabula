@@ -31,6 +31,7 @@ namespace InfraTabula.Xna
             ResizeEnd += (s, e) => ResumeLayout(true);
         }
 
+
         private void CreateBrowser(string url)
         {
             Browser = new ChromiumWebBrowser(url)
@@ -73,7 +74,11 @@ namespace InfraTabula.Xna
 
         private void OnBrowserAddressChanged(object sender, AddressChangedEventArgs args)
         {
-            this.InvokeOnUiThreadIfRequired(() => urlTextBox.Text = args.Address);
+            this.InvokeOnUiThreadIfRequired(() =>
+            {
+                if (!urlTextBox.IsDisposed)
+                    urlTextBox.Text = args.Address;
+            });
         }
 
 
@@ -126,7 +131,6 @@ namespace InfraTabula.Xna
         private void ExitMenuItemClick(object sender, EventArgs e)
         {
             Browser.Dispose();
-            Cef.Shutdown();
             Close();
         }
 
@@ -163,6 +167,7 @@ namespace InfraTabula.Xna
             }
         }
 
+
         public int GetVerticalScrollPosition()
         {
             var r = Browser.EvaluateScript(@"document.body.scrollTop");
@@ -173,5 +178,16 @@ namespace InfraTabula.Xna
         {
             Browser.ExecuteScriptAsync(string.Format(@"document.body.scrollTop = {0}", pos));
         }
+
+
+        public void InvokeClick(Microsoft.Xna.Framework.Vector2 pos)
+        {
+            var clickEvt = @"function _simulateClick(x, y) {
+                                return jQuery(document.elementFromPoint(x, y)).click();
+                            }
+                            _simulateClick(" + (int) pos.X + ", " + (int) pos.Y + ");";
+            Browser.ExecuteScriptAsync(clickEvt);
+        }
+
     }
 }
