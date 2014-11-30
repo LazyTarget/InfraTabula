@@ -10,7 +10,7 @@ namespace InfraTabula.Xna
 {
     public class WebScreen : GameScreen
     {
-        private int _scrollStrength = 40;
+        private int _scrollStrength = 250;
         private SimpleBrowserForm _browserForm;
         private readonly ItemSprite _itemSprite;
 

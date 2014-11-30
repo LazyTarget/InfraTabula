@@ -53,36 +53,57 @@ namespace InfraTabula.Xna
         }
 
 
+        private int itemsPage = 1;
+        private int itemsPageSize = 8;
+        private SpriteFont _itemFont;
 
         public override void LoadContent()
         {
             base.LoadContent();
 
             
-            var items = Game.Api.GetItems();
-            _items = items.Take(8).ToList();
-
-
-            var first = _items.First();
-
-            var res = Game.Api.RemoveTags(first.ID, "temp");
-
-            var it2 = Game.Api.GetItems().ToList();
-
-            foreach (var item in it2)
-            {
-                var tags = item.Tags.ToList();
-                var tStr = string.Join(",", tags);
-            }
+            _itemFont = Game.Content.Load<SpriteFont>("GameFont");
             
+            LoadPage();
+        }
 
-            Sprites.Clear();
+
+        private void LoadPage()
+        {
+            var request = new GetItemsRequest
+            {
+                Page = itemsPage,
+                PageSize = itemsPageSize,
+            };
+            var items = Game.Api.GetItems(request).ToList();
+            _items = items.Take(itemsPageSize).ToList();
+
+
+            //var first = _items.First();
+
+            //var res = Game.Api.RemoveTags(first.ID, "temp");
+
+            //var it2 = Game.Api.GetItems(request).ToList();
+
+            //foreach (var item in it2)
+            //{
+            //    var tags = item.Tags.ToList();
+            //    var tStr = string.Join(",", tags);
+            //}
+            
+            RenderItems();
+        }
+
+
+        private void RenderItems()
+        {
+            Sprites.RemoveAll(x => x is ItemSprite);
+
             var spriteFactory = new SpriteFactory(ScreenManager.Game);
-            var itemFont = Game.Content.Load<SpriteFont>("GameFont");
             var prevPos = GetRelative(0.05f, 0.30f);
             foreach (var item in _items)
             {
-                var textSprite = new TextSpriteTexture2D(itemFont);
+                var textSprite = new TextSpriteTexture2D(_itemFont);
                 var s = spriteFactory.Create<ItemSprite>(item, textSprite);
                 var textureSize = GetRelative(0.9f / _items.Count, 0.40f);
                 //var borderSize = textureSize.GetRelative(0.1f / _items.Count, 0.1f).ToPoint();
@@ -108,7 +129,7 @@ namespace InfraTabula.Xna
                 //    { "hover", new TextSpriteTexture2D(itemFont) { Text = item.Title } },
                 //    { "focused-hover", new TextSpriteTexture2D(itemFont) { Text = item.Title } },
                 //});
-                
+
 
                 s.OnClicked += Item_OnClick;
                 s.OnMouseEntered += Item_OnMouseEntered;
@@ -119,7 +140,7 @@ namespace InfraTabula.Xna
                 Sprites.Add(s);
             }
         }
-        
+
 
         public override void ExitScreen()
         {
@@ -271,6 +292,19 @@ namespace InfraTabula.Xna
                 oldIndex = _items.IndexOf(_focusedItemSprite.Item);
             if (oldIndex != index)
             {
+                if (index == -1 && itemsPage > 1)
+                {
+                    itemsPage--;
+                    LoadPage();
+                    index = _items.Count - 1;
+                }
+                else if (index == _items.Count)
+                {
+                    itemsPage++;
+                    LoadPage();
+                    index = 0;
+                }
+
                 if (index >= 0 && index < _items.Count)
                 {
                     var newItem = _items.ElementAt(index);

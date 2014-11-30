@@ -63,6 +63,18 @@ namespace InfraTabula
             return res;
         }
 
+        private PocketAPI.GetItemsRequest Convert(GetItemsRequest request)
+        {
+            var res = new PocketAPI.GetItemsRequest
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+                SearchQuery = request.SearchQuery,
+                Tag = request.Tag,
+            };
+            return res;
+        }
+
 
         private ActionResult Modify(PocketAction action)
         {
@@ -75,9 +87,10 @@ namespace InfraTabula
 
 
 
-        public override IEnumerable<Item> GetItems()
+        public override IEnumerable<Item> GetItems(GetItemsRequest request)
         {
-            var enumerable = _api.GetItems();
+            var pocketRequest = Convert(request);
+            var enumerable = _api.GetItems(pocketRequest);
             if (enumerable == null)
                 return null;
             var res = enumerable.Select(Convert);
