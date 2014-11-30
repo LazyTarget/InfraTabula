@@ -16,7 +16,7 @@ namespace InfraTabula.Xna.Win
         [STAThread]
         static void Main()
         {
-            CefConfig.Init();
+            //CefConfig.Init();
 
             API = new PocketApi();
 

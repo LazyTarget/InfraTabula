@@ -34,6 +34,9 @@ namespace InfraTabula.Xna
 
         private void CreateBrowser(string url)
         {
+            if (!Cef.IsInitialized)
+                CefConfig.Init();
+
             Browser = new ChromiumWebBrowser(url)
             {
                 Dock = DockStyle.Fill,
@@ -133,6 +136,15 @@ namespace InfraTabula.Xna
             Browser.Dispose();
             Close();
         }
+
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            //Cef.Shutdown();
+        }
+
 
         private void GoButtonClick(object sender, EventArgs e)
         {

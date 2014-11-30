@@ -12,6 +12,12 @@ namespace InfraTabula.Xna
         // Use when debugging the actual SubProcess, to make breakpoints etc. inside that project work.
         private const bool debuggingSubProcess = false;
 
+
+        public static bool IsInitialized
+        {
+            get { return Cef.IsInitialized; }
+        }
+
         public static void Init()
         {
             Stop();
